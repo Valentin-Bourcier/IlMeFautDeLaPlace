@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.tree.DefaultTreeModel;
 
@@ -14,37 +15,39 @@ public class NodeDirectory implements MyNodeInterface {
 
     private File directory;
     private ServiceNode father;
-    private ArrayList<ServiceNode> sons;
+    private ArrayList<ServiceNode> sons = new ArrayList<ServiceNode>();
 
     private String hash;
+
+    public HashMap<String, String> extension = new HashMap<String, String>();
 
     // BUILDERS
     NodeDirectory() {
 	directory = null;
 	father = null;
-	sons = new ArrayList<ServiceNode>();
     }
 
     NodeDirectory(File f) {
 	directory = f;
-	sons = new ArrayList<ServiceNode>();
+
     }
 
     NodeDirectory(String filename) {
+
 	directory = new File(filename);
-	sons = new ArrayList<ServiceNode>();
+
     }
 
     NodeDirectory(String filename, ServiceNode father) {
 	directory = new File(filename);
-	sons = new ArrayList<ServiceNode>();
+
 	this.father = father;
     }
 
     NodeDirectory(File f, ServiceNode father) {
 	directory = f;
 	this.father = father;
-	sons = new ArrayList<ServiceNode>();
+
     }
 
     // SETTERS ET GETTERS
@@ -58,6 +61,10 @@ public class NodeDirectory implements MyNodeInterface {
 
     private ServiceNode getFather() {
 	return father;
+    }
+
+    private HashMap<String, String> getExtension() {
+	return extension;
     }
 
     private void setFather(ServiceNode father) {
@@ -85,6 +92,7 @@ public class NodeDirectory implements MyNodeInterface {
     public ServiceNode createINode(File f) {
 	if (f.isDirectory()) {
 	    NodeDirectory result = new NodeDirectory(f);
+	    // System.out.println(result.filename());
 	    for (File currentFile : f.listFiles()) {
 		result.sons.add(NodeFactory.createINode(currentFile));
 	    }
@@ -92,6 +100,7 @@ public class NodeDirectory implements MyNodeInterface {
 	    return result;
 	} else {
 	    NodeFile result = new NodeFile(f);
+	    // System.out.println(result.filename());
 	    result.computHash();
 	    return result;
 	}
@@ -154,18 +163,50 @@ public class NodeDirectory implements MyNodeInterface {
 
     @Override
     public ArrayList<ServiceNode> child() {
-	// TODO Auto-generated method stub
+
 	return this.getSons();
     }
 
     @Override
     public ServiceNode filter(String[] filtres) {
-	// TODO Auto-generated method stub
-	return null;
+	// TODO
+	// On ne garde que les fils éligibles
+	ArrayList<ServiceNode> initArray = this.child();
+	for (ServiceNode currentNode : initArray) {
+	    if (currentNode.containsOneOfThose(filtres) == Boolean.FALSE) {
+		this.sons.remove(currentNode);
+	    }
+	}
+
+	// On filtre les fils éligibles
+	for (ServiceNode currentNode : child()) {
+	    currentNode.filter(filtres);
+	}
+
+	return this;
+    }
+
+    @Override
+    public boolean isThatKind(String kind) {
+	return getExtension().containsKey(kind);
+    }
+
+    @Override
+    public boolean containsOneOfThose(String[] filtres) {
+	for (String currentFiltre : filtres) {
+	    if (isThatKind(currentFiltre))
+		return Boolean.TRUE;
+	}
+	return Boolean.FALSE;
+    }
+
+    @Override
+    public void addSon(ServiceNode node) {
+	this.getSons().add(node);
     }
 
     public String toString() {
-	String s = filename() + " ";
+	String s = filename().toUpperCase() + " ";
 	for (ServiceNode currentNode : child()) {
 	    s += currentNode.toString() + " ";
 	}
@@ -204,14 +245,35 @@ public class NodeDirectory implements MyNodeInterface {
 	    MessageDigest md = MessageDigest.getInstance("MD5");
 	    thedigest = md.digest(bytesOfMessage);
 	} catch (UnsupportedEncodingException e) {
-	    // TODO Auto-generated catch block
+
 	    e.printStackTrace();
 	} catch (NoSuchAlgorithmException e) {
-	    // TODO Auto-generated catch block
+
 	    e.printStackTrace();
 	}
 	this.setHash(new String(thedigest, StandardCharsets.UTF_8));
 
+    }
+
+    // retourne la liste de tous les types de fichier contenus dans le dossier
+    public String computeExtension() {
+	String listeExtension = "";
+	for (ServiceNode currentNode : sons) {
+	    listeExtension += ((MyNodeInterface) currentNode).computeExtension() + " ";
+	}
+	String[] tabExtension = listeExtension.trim().split(" ");
+	for (String currentExtension : tabExtension) {
+	    extension.put(currentExtension.trim(), currentExtension.trim());
+	}
+	System.out.println(extension.size());
+	return listeExtension;
+    }
+
+    // Sera utilisé pôur connaitre tous les types de fichier contenus dans le
+    // dossier
+    public String[] extension() {
+	String[] type = new String[1];
+	return extension.keySet().toArray(type);
     }
 
 }

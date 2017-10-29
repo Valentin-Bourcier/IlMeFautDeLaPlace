@@ -27,4 +27,12 @@ public interface ServiceNode {
     public ServiceNode filter(String[] filtres);
 
     public ServiceNode createINode(File f);
+
+    public boolean containsOneOfThose(String[] filtres);
+
+    public boolean isThatKind(String kind);
+
+    public void addSon(ServiceNode node);
+
+    // public ServiceNode copy(ServiceNode node);
 }

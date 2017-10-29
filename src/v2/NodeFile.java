@@ -15,6 +15,7 @@ public class NodeFile implements MyNodeInterface {
     private File file;
     private ServiceNode father;
     private String hash;
+    private String extension;
 
     // BUILDERS
     NodeFile() {
@@ -57,8 +58,16 @@ public class NodeFile implements MyNodeInterface {
 	return hash;
     }
 
+    private String getExtension() {
+	return extension;
+    }
+
     private void setHash(String hash) {
 	this.hash = hash;
+    }
+
+    public void setExtension(String extension) {
+	this.extension = extension.substring(1).trim();
     }
 
     @Override
@@ -86,25 +95,25 @@ public class NodeFile implements MyNodeInterface {
 
     @Override
     public String filename() {
-	// TODO Auto-generated method stub
+
 	return file.getName();
     }
 
     @Override
     public String hash() {
-	// TODO Auto-generated method stub
+
 	return getHash();
     }
 
     @Override
     public long weight() {
-	// TODO Auto-generated method stub
+
 	return file.getTotalSpace();
     }
 
     @Override
     public String absolutePath() {
-	// TODO Auto-generated method stub
+
 	return file.getAbsolutePath();
     }
 
@@ -125,10 +134,12 @@ public class NodeFile implements MyNodeInterface {
 	return new NodeFile(f);
     }
 
+    @Override
     public String toString() {
 	return "" + filename();
     }
 
+    // MyInterfaceNode
     @Override
     public void computHash() {
 	// System.out.println("Hash en cours : " + filename());
@@ -142,13 +153,46 @@ public class NodeFile implements MyNodeInterface {
 	    dis.close();
 	    this.setHash(new String(hash, StandardCharsets.UTF_8));
 	} catch (IOException e) {
-	    // TODO Auto-generated catch block
+
 	    e.printStackTrace();
 	} catch (NoSuchAlgorithmException e) {
-	    // TODO Auto-generated catch block
+
 	    e.printStackTrace();
 	}
 
+    }
+
+    // Renvoie .txt
+    public String computeExtension() {
+	setExtension(filename().substring(filename().lastIndexOf(".")));
+	return getExtension();
+    }
+
+    public String[] extension() {
+	String[] result = new String[1];
+	result[1] = getExtension();
+	return result;
+    }
+
+    @Override
+    public boolean isThatKind(String kind) {
+
+	return getExtension().equals(kind);
+    }
+
+    @Override
+    public void addSon(ServiceNode node) {
+	// TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public boolean containsOneOfThose(String[] filtres) {
+	for (String currentFiltre : filtres) {
+	    if (isThatKind(currentFiltre))
+		return Boolean.TRUE;
+	}
+	return Boolean.FALSE;
     }
 
 }
