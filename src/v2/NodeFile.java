@@ -13,14 +13,13 @@ import javax.swing.tree.DefaultTreeModel;
 
 public class NodeFile implements MyNodeInterface {
 	private File file;
-	private ServiceNode father;
+
 	private String hash;
 	private String extension;
 
 	// BUILDERS
 	NodeFile() {
 		file = null;
-		father = null;
 
 	}
 
@@ -34,24 +33,8 @@ public class NodeFile implements MyNodeInterface {
 
 	}
 
-	NodeFile(String filename, ServiceNode father) {
-		file = new File(filename);
-
-		this.father = father;
-	}
-
-	NodeFile(File f, ServiceNode father) {
-		file = f;
-		this.father = father;
-
-	}
-
 	private File getFile() {
 		return file;
-	}
-
-	private ServiceNode getFather() {
-		return father;
 	}
 
 	private String getHash() {
@@ -119,18 +102,17 @@ public class NodeFile implements MyNodeInterface {
 
 	@Override
 	public ArrayList<ServiceNode> child() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Une feuille n'a pas de fils");
+
 	}
 
 	@Override
 	public ServiceNode filter(String[] filtres) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("On ne peut filtrer que des dossiers");
 	}
 
 	@Override
-	public ServiceNode createINode(File f) {
+	public MyNodeInterface createINode(File f) {
 		return new NodeFile(f);
 	}
 
@@ -181,12 +163,6 @@ public class NodeFile implements MyNodeInterface {
 	}
 
 	@Override
-	public void addSon(ServiceNode node) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public boolean containsOneOfThose(String[] filtres) {
 		for (String currentFiltre : filtres) {
 			if (isThatKind(currentFiltre))
@@ -202,7 +178,6 @@ public class NodeFile implements MyNodeInterface {
 			result = (NodeFile) super.clone();
 
 		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		result.file = new File(this.file.getPath());
@@ -211,6 +186,16 @@ public class NodeFile implements MyNodeInterface {
 		result.extension = new String(this.extension);
 
 		return result;
+	}
+
+	@Override
+	public void addSon(MyNodeInterface node) {
+		throw new UnsupportedOperationException();
+
+	}
+
+	@Override
+	public void effectiveFilter(String[] filtres) {
 	}
 
 	/*
@@ -248,7 +233,6 @@ public class NodeFile implements MyNodeInterface {
 	try {
 	    n1.finalize();
 	} catch (Throwable e) {
-	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
 	System.out.println(n2);

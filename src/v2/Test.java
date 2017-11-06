@@ -8,7 +8,7 @@ public class Test {
 
 		long start = System.currentTimeMillis();
 		MyNodeInterface root = (MyNodeInterface) NodeDirectory.NodeFactory
-				.createINode(new File("C:\\Users\\val-5\\Pictures\\test"));
+				.createINode(new File("C:\\Users\\val-5\\Pictures"));
 		long end = System.currentTimeMillis();
 		root.computeExtension();
 		System.out.println(root);

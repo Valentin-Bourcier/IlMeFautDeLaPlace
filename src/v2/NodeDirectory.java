@@ -12,11 +12,10 @@ import java.util.Map;
 import javax.swing.tree.DefaultTreeModel;
 
 public class NodeDirectory implements MyNodeInterface {
-	static final protected ServiceNode NodeFactory = new NodeDirectory();
+	static final protected MyNodeInterface NodeFactory = new NodeDirectory();
 
 	private File directory;
-	private ServiceNode father;
-	private ArrayList<ServiceNode> sons = new ArrayList<ServiceNode>();
+	private ArrayList<MyNodeInterface> sons = new ArrayList<MyNodeInterface>();
 
 	private String hash = null;
 
@@ -25,7 +24,7 @@ public class NodeDirectory implements MyNodeInterface {
 	// BUILDERS
 	NodeDirectory() {
 		directory = null;
-		father = null;
+
 	}
 
 	NodeDirectory(File f) {
@@ -39,18 +38,6 @@ public class NodeDirectory implements MyNodeInterface {
 
 	}
 
-	NodeDirectory(String filename, ServiceNode father) {
-		directory = new File(filename);
-
-		this.father = father;
-	}
-
-	NodeDirectory(File f, ServiceNode father) {
-		directory = f;
-		this.father = father;
-
-	}
-
 	// SETTERS ET GETTERS
 	private File getDirectory() {
 		return directory;
@@ -60,19 +47,11 @@ public class NodeDirectory implements MyNodeInterface {
 		this.directory = directory;
 	}
 
-	private ServiceNode getFather() {
-		return father;
-	}
-
-	private void setFather(ServiceNode father) {
-		this.father = father;
-	}
-
-	private ArrayList<ServiceNode> getSons() {
+	private ArrayList<MyNodeInterface> getSons() {
 		return sons;
 	}
 
-	private void setSons(ArrayList<ServiceNode> sons) {
+	private void setSons(ArrayList<MyNodeInterface> sons) {
 		this.sons = sons;
 	}
 
@@ -96,8 +75,9 @@ public class NodeDirectory implements MyNodeInterface {
 	}
 
 	// FABRIQUE
-	public ServiceNode createINode(File f) {
+	public MyNodeInterface createINode(File f) {
 		if (f.isDirectory()) {
+			//NodeDirectory result = new NodeDirectory(f);
 			NodeDirectory result = new NodeDirectory(f);
 			// System.out.println(result.filename());
 			for (File currentFile : f.listFiles()) {
@@ -118,11 +98,11 @@ public class NodeDirectory implements MyNodeInterface {
 	@Override
 	public ServiceNode tree(String path) {
 		File f = new File(path);
-		ServiceNode tree = NodeFactory.createINode(f);
+		MyNodeInterface tree = NodeFactory.createINode(f);
 		for (File currentFile : f.listFiles()) {
 			sons.add(NodeFactory.createINode(currentFile));
 		}
-		((MyNodeInterface) tree).computHash();
+		tree.computHash();
 		return tree;
 	}
 
@@ -170,28 +150,12 @@ public class NodeDirectory implements MyNodeInterface {
 
 	@Override
 	public ArrayList<ServiceNode> child() {
-
-		return this.getSons();
+		ArrayList<ServiceNode> sons = new ArrayList<ServiceNode>();
+		for (ServiceNode currentNode : getSons()) {
+			sons.add(currentNode);
+		}
+		return sons;
 	}
-
-	/*@Override
-	public ServiceNode filter(String[] filtres) {
-		// TODO
-		// On ne garde que les fils éligibles
-		ArrayList<ServiceNode> initArray = this.child();
-		for (ServiceNode currentNode : initArray) {
-			if (currentNode.containsOneOfThose(filtres) == Boolean.FALSE) {
-				this.sons.remove(currentNode);
-			}
-		}
-	
-		// On filtre les fils éligibles
-		for (ServiceNode currentNode : child()) {
-			currentNode.filter(filtres);
-		}
-	
-		return this;
-	}*/
 
 	public ServiceNode filter(String[] filtres) {
 		NodeDirectory result = this.clone();
@@ -199,11 +163,12 @@ public class NodeDirectory implements MyNodeInterface {
 		return result;
 	}
 
-	private void effectiveFilter(String[] filtres) {
+	@Override
+	public void effectiveFilter(String[] filtres) {
 
 		// On liste les fils éligibles
-		ArrayList<ServiceNode> eligibleSons = new ArrayList<ServiceNode>();
-		for (ServiceNode currentNode : child()) {
+		ArrayList<MyNodeInterface> eligibleSons = new ArrayList<MyNodeInterface>();
+		for (MyNodeInterface currentNode : getSons()) {
 			if (currentNode.containsOneOfThose(filtres) == Boolean.TRUE) {
 				eligibleSons.add(currentNode.clone());
 			}
@@ -212,8 +177,8 @@ public class NodeDirectory implements MyNodeInterface {
 		this.setSons(eligibleSons);
 
 		// On filtre les fils éligibles
-		for (ServiceNode currentNode : child()) {
-			currentNode.filter(filtres);
+		for (MyNodeInterface currentNode : getSons()) {
+			currentNode.effectiveFilter(filtres);
 		}
 
 	}
@@ -233,7 +198,7 @@ public class NodeDirectory implements MyNodeInterface {
 	}
 
 	@Override
-	public void addSon(ServiceNode node) {
+	public void addSon(MyNodeInterface node) {
 		this.getSons().add(node);
 	}
 
@@ -319,8 +284,8 @@ public class NodeDirectory implements MyNodeInterface {
 
 		result.setDirectory(new File(this.getDirectory().getPath()));
 
-		result.setSons(new ArrayList<ServiceNode>());
-		for (ServiceNode currentNode : this.getSons()) {
+		result.setSons(new ArrayList<MyNodeInterface>());
+		for (MyNodeInterface currentNode : this.getSons()) {
 			result.addSon(currentNode.clone());
 		}
 
@@ -373,7 +338,7 @@ public class NodeDirectory implements MyNodeInterface {
 		try {
 			r1.finalize();
 		} catch (Throwable e) {
-			// TODO Auto-generated catch block
+	
 			e.printStackTrace();
 		}
 		System.out.println(r2);
