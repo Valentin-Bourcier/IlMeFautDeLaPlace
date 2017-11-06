@@ -1,6 +1,9 @@
 package v2;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -12,30 +15,35 @@ import java.util.Map;
 import javax.swing.tree.DefaultTreeModel;
 
 public class NodeDirectory implements MyNodeInterface {
+
+	private static final long serialVersionUID = -115364763555925482L;
+
 	static final protected MyNodeInterface NodeFactory = new NodeDirectory();
 
 	private File directory;
 	private ArrayList<MyNodeInterface> sons = new ArrayList<MyNodeInterface>();
-
-	private String hash = null;
-
+	private String hash = "";
 	public HashMap<String, String> extension = new HashMap<String, String>();
+	long lastModificationDate = 0;
+	NodeDirectory father = null;
 
 	// BUILDERS
 	NodeDirectory() {
 		directory = null;
-
 	}
 
 	NodeDirectory(File f) {
 		directory = f;
-
 	}
 
 	NodeDirectory(String filename) {
-
 		directory = new File(filename);
+	}
 
+	NodeDirectory(File f, long date, NodeDirectory father) {
+		directory = f;
+		lastModificationDate = date;
+		this.father = father;
 	}
 
 	// SETTERS ET GETTERS
@@ -55,10 +63,8 @@ public class NodeDirectory implements MyNodeInterface {
 		this.sons = sons;
 	}
 
-	// Retourne le hash, le calcul si il n'est pas déjà fait
 	private String getHash() {
-		if (hash == null)
-			this.computHash();
+
 		return hash;
 	}
 
@@ -74,22 +80,39 @@ public class NodeDirectory implements MyNodeInterface {
 		this.extension = extension;
 	}
 
+	private long getLastModificationDate() {
+		return lastModificationDate;
+	}
+
+	private void setLastModificationDate(long date) {
+		lastModificationDate = date;
+	}
+
 	// FABRIQUE
 	public MyNodeInterface createINode(File f) {
-		if (f.isDirectory()) {
-			//NodeDirectory result = new NodeDirectory(f);
-			NodeDirectory result = new NodeDirectory(f);
-			// System.out.println(result.filename());
-			for (File currentFile : f.listFiles()) {
-				result.sons.add(NodeFactory.createINode(currentFile));
+		try {
+			if (f.isDirectory()) {
+				//NodeDirectory result = new NodeDirectory(f);
+				NodeDirectory result = new NodeDirectory(f);
+				result.setLastModificationDate(f.lastModified());
+				// System.out.println(result.filename());
+				for (File currentFile : f.listFiles()) {
+					MyNodeInterface tmpNode = NodeFactory.createINode(currentFile);
+					if (tmpNode != null)
+						result.sons.add(tmpNode);
+				}
+				//result.computHash();
+				return result;
+			} else {
+				NodeFile result = new NodeFile(f);
+				result.setLastModificationDate(f.lastModified());
+				// System.out.println(result.filename());
+				//result.computHash();
+				return result;
 			}
-			result.computHash();
-			return result;
-		} else {
-			NodeFile result = new NodeFile(f);
-			// System.out.println(result.filename());
-			result.computHash();
-			return result;
+		} catch (Exception e) {//Dossier verouille ect...
+			System.out.println(e);
+			return null;
 		}
 
 	}
@@ -102,7 +125,7 @@ public class NodeDirectory implements MyNodeInterface {
 		for (File currentFile : f.listFiles()) {
 			sons.add(NodeFactory.createINode(currentFile));
 		}
-		tree.computHash();
+		//tree.computHash();
 		return tree;
 	}
 
@@ -140,6 +163,11 @@ public class NodeDirectory implements MyNodeInterface {
 	public long weight() {
 
 		return directory.getTotalSpace();
+	}
+
+	@Override
+	public long lastModificationDate() {
+		return getLastModificationDate();
 	}
 
 	@Override
@@ -262,7 +290,7 @@ public class NodeDirectory implements MyNodeInterface {
 		for (String currentExtension : tabExtension) {
 			extension.put(currentExtension.trim(), currentExtension.trim());
 		}
-		System.out.println(extension.size());
+		//System.out.println(extension.size());
 		return listeExtension;
 	}
 
@@ -298,6 +326,34 @@ public class NodeDirectory implements MyNodeInterface {
 			result.extension.put(key, value);
 		}
 		return result;
+	}
+
+	public NodeDirectory deserialize() {
+		NodeDirectory nd = null;
+		try {
+			FileInputStream fileIn = new FileInputStream("tmp.ser");
+			ObjectInputStream in = new ObjectInputStream(fileIn);
+			nd = (NodeDirectory) in.readObject();
+			in.close();
+			fileIn.close();
+		} catch (IOException i) {
+			i.printStackTrace();
+			return null;
+		} catch (ClassNotFoundException c) {
+			System.out.println("Node directory class not found");
+			c.printStackTrace();
+			return null;
+		}
+		return nd;
+	}
+
+	@Override
+	public int getNbNode() {
+		int somme = 1;
+		for (MyNodeInterface currentNode : getSons()) {
+			somme = somme + currentNode.getNbNode();
+		}
+		return somme;
 	}
 
 	/*

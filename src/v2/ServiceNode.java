@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import javax.swing.tree.DefaultTreeModel;
 
-public interface ServiceNode extends Cloneable {
+public interface ServiceNode {
 	public ServiceNode tree(String path);
 
 	public ServiceNode tree(String path, int depth);
@@ -20,11 +20,12 @@ public interface ServiceNode extends Cloneable {
 
 	public long weight();
 
+	public long lastModificationDate();
+
 	public String absolutePath();
 
 	public ArrayList<ServiceNode> child();
 
 	public ServiceNode filter(String[] filtres);
 
-	// public ServiceNode copy(ServiceNode node);
 }

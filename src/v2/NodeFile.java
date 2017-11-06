@@ -3,6 +3,7 @@ package v2;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
@@ -12,10 +13,16 @@ import java.util.ArrayList;
 import javax.swing.tree.DefaultTreeModel;
 
 public class NodeFile implements MyNodeInterface {
+
+	private static final long serialVersionUID = -7609107586723401900L;
+
 	private File file;
 
-	private String hash;
+	private String hash = "";
 	private String extension;
+
+	long lastModificationDate = 0;
+	NodeDirectory father = null;
 
 	// BUILDERS
 	NodeFile() {
@@ -31,6 +38,12 @@ public class NodeFile implements MyNodeInterface {
 	NodeFile(String filename) {
 		file = new File(filename);
 
+	}
+
+	NodeFile(File f, long date, NodeDirectory father) {
+		file = f;
+		lastModificationDate = date;
+		this.father = father;
 	}
 
 	private File getFile() {
@@ -50,7 +63,15 @@ public class NodeFile implements MyNodeInterface {
 	}
 
 	public void setExtension(String extension) {
-		this.extension = extension.substring(1).trim();
+		this.extension = extension.trim();
+	}
+
+	private long getLastModificationDate() {
+		return lastModificationDate;
+	}
+
+	void setLastModificationDate(long date) {
+		lastModificationDate = date;
 	}
 
 	@Override
@@ -92,6 +113,11 @@ public class NodeFile implements MyNodeInterface {
 	public long weight() {
 
 		return file.getTotalSpace();
+	}
+
+	@Override
+	public long lastModificationDate() {
+		return getLastModificationDate();
 	}
 
 	@Override
@@ -146,7 +172,12 @@ public class NodeFile implements MyNodeInterface {
 
 	// Renvoie .txt
 	public String computeExtension() {
-		setExtension(filename().substring(filename().lastIndexOf(".")));
+		try {
+			setExtension(filename().substring(filename().lastIndexOf(".")));
+		} catch (StringIndexOutOfBoundsException e) {
+			//System.out.println("Impossible de detecter l'extension de " + this);
+			setExtension("");
+		}
 		return getExtension();
 	}
 
@@ -196,6 +227,25 @@ public class NodeFile implements MyNodeInterface {
 
 	@Override
 	public void effectiveFilter(String[] filtres) {
+	}
+
+	public NodeFile deserialize() {
+		NodeFile nf = null;
+		try {
+			FileInputStream fileIn = new FileInputStream("tmp.ser");
+			ObjectInputStream in = new ObjectInputStream(fileIn);
+			nf = (NodeFile) in.readObject();
+			in.close();
+			fileIn.close();
+		} catch (IOException i) {
+			i.printStackTrace();
+			return null;
+		} catch (ClassNotFoundException c) {
+			System.out.println("Node directory class not found");
+			c.printStackTrace();
+			return null;
+		}
+		return nf;
 	}
 
 	/*
