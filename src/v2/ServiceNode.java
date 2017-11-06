@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import javax.swing.tree.DefaultTreeModel;
 
-public interface ServiceNode {
+public interface ServiceNode extends Cloneable {
     public ServiceNode tree(String path);
 
     public ServiceNode tree(String path, int depth);
@@ -33,6 +33,8 @@ public interface ServiceNode {
     public boolean isThatKind(String kind);
 
     public void addSon(ServiceNode node);
+
+    public ServiceNode clone();
 
     // public ServiceNode copy(ServiceNode node);
 }
