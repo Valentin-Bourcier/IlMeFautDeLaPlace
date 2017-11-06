@@ -37,7 +37,6 @@ public class NodeFile implements MyNodeInterface {
 
 	NodeFile(String filename) {
 		file = new File(filename);
-
 	}
 
 	NodeFile(File f, long date, NodeDirectory father) {
@@ -74,8 +73,16 @@ public class NodeFile implements MyNodeInterface {
 		lastModificationDate = date;
 	}
 
+	private NodeDirectory getFather() {
+		return father;
+	}
+
+	protected void setFather(NodeDirectory father) {
+		this.father = father;
+	}
+
 	@Override
-	public ServiceNode tree(String path) {
+	public ServiceNode tree(String path, ServiceNode pere) {
 		return new NodeFile(path);
 	}
 
@@ -138,7 +145,7 @@ public class NodeFile implements MyNodeInterface {
 	}
 
 	@Override
-	public MyNodeInterface createINode(File f) {
+	public MyNodeInterface createINode(File f, ServiceNode pere) {
 		return new NodeFile(f);
 	}
 
@@ -167,7 +174,10 @@ public class NodeFile implements MyNodeInterface {
 
 			e.printStackTrace();
 		}
-
+		//On répercute le changement de hash sur l'ensemble de l'arbo
+		if (getFather() != null) {
+			getFather().computHash();
+		}
 	}
 
 	// Renvoie .txt
@@ -203,7 +213,7 @@ public class NodeFile implements MyNodeInterface {
 	}
 
 	@Override
-	public NodeFile clone() {
+	public NodeFile clone(MyNodeInterface pere) {
 		NodeFile result = null;
 		try {
 			result = (NodeFile) super.clone();
@@ -215,6 +225,7 @@ public class NodeFile implements MyNodeInterface {
 		// result.father = this.father.clone();
 		result.hash = new String(this.hash());
 		result.extension = new String(this.extension);
+		result.setFather((NodeDirectory) pere);
 
 		return result;
 	}

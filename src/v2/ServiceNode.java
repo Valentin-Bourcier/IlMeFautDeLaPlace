@@ -5,8 +5,10 @@ import java.util.ArrayList;
 
 import javax.swing.tree.DefaultTreeModel;
 
+import com.sun.istack.internal.Nullable;
+
 public interface ServiceNode {
-	public ServiceNode tree(String path);
+	public ServiceNode tree(String path, @Nullable ServiceNode pere);
 
 	public ServiceNode tree(String path, int depth);
 

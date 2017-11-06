@@ -14,6 +14,8 @@ import java.util.Map;
 
 import javax.swing.tree.DefaultTreeModel;
 
+import com.sun.istack.internal.Nullable;
+
 public class NodeDirectory implements MyNodeInterface {
 
 	private static final long serialVersionUID = -115364763555925482L;
@@ -88,16 +90,25 @@ public class NodeDirectory implements MyNodeInterface {
 		lastModificationDate = date;
 	}
 
+	protected NodeDirectory getFather() {
+		return father;
+	}
+
+	private void setFather(NodeDirectory father) {
+		this.father = father;
+	}
+
 	// FABRIQUE
-	public MyNodeInterface createINode(File f) {
+	public MyNodeInterface createINode(File f, @Nullable ServiceNode pere) {
 		try {
 			if (f.isDirectory()) {
 				//NodeDirectory result = new NodeDirectory(f);
 				NodeDirectory result = new NodeDirectory(f);
 				result.setLastModificationDate(f.lastModified());
+				result.setFather((NodeDirectory) pere);
 				// System.out.println(result.filename());
 				for (File currentFile : f.listFiles()) {
-					MyNodeInterface tmpNode = NodeFactory.createINode(currentFile);
+					MyNodeInterface tmpNode = NodeFactory.createINode(currentFile, result);
 					if (tmpNode != null)
 						result.sons.add(tmpNode);
 				}
@@ -106,6 +117,7 @@ public class NodeDirectory implements MyNodeInterface {
 			} else {
 				NodeFile result = new NodeFile(f);
 				result.setLastModificationDate(f.lastModified());
+				result.setFather((NodeDirectory) pere);
 				// System.out.println(result.filename());
 				//result.computHash();
 				return result;
@@ -119,11 +131,11 @@ public class NodeDirectory implements MyNodeInterface {
 
 	// ServiceNode
 	@Override
-	public ServiceNode tree(String path) {
+	public ServiceNode tree(String path, @Nullable ServiceNode pere) {
 		File f = new File(path);
-		MyNodeInterface tree = NodeFactory.createINode(f);
+		MyNodeInterface tree = NodeFactory.createINode(f, pere);
 		for (File currentFile : f.listFiles()) {
-			sons.add(NodeFactory.createINode(currentFile));
+			sons.add(NodeFactory.createINode(currentFile, tree));
 		}
 		//tree.computHash();
 		return tree;
@@ -186,7 +198,7 @@ public class NodeDirectory implements MyNodeInterface {
 	}
 
 	public ServiceNode filter(String[] filtres) {
-		NodeDirectory result = this.clone();
+		NodeDirectory result = this.clone(null);
 		result.effectiveFilter(filtres);
 		return result;
 	}
@@ -198,7 +210,7 @@ public class NodeDirectory implements MyNodeInterface {
 		ArrayList<MyNodeInterface> eligibleSons = new ArrayList<MyNodeInterface>();
 		for (MyNodeInterface currentNode : getSons()) {
 			if (currentNode.containsOneOfThose(filtres) == Boolean.TRUE) {
-				eligibleSons.add(currentNode.clone());
+				eligibleSons.add(currentNode.clone(this));
 			}
 		}
 		//on remplace alors la liste de fils, par la liste ne contenant que les fils éligibles
@@ -251,15 +263,19 @@ public class NodeDirectory implements MyNodeInterface {
 	public void computHash() {
 		// System.out.println("Hash en cours : " + filename());
 		String stringToHash = "";
-		for (ServiceNode CurrentNode : getSons()) {
+		for (MyNodeInterface CurrentNode : getSons()) {
 			// Si fils deja hash on le recup
 			if (!(CurrentNode.hash() == null)) {
 				stringToHash += CurrentNode.hash();
 			}
 			// Sinon on le calcule puis on le recup
 			else {
-				((MyNodeInterface) CurrentNode).computHash();
+				CurrentNode.computHash();
 				stringToHash += CurrentNode.hash();
+			}
+			//On répercute le changement de hash sur l'ensemble de l'arbo
+			if (getFather() != null) {
+				getFather().computHash();
 			}
 		}
 
@@ -302,7 +318,7 @@ public class NodeDirectory implements MyNodeInterface {
 	}
 
 	@Override
-	public NodeDirectory clone() {
+	public NodeDirectory clone(MyNodeInterface pere) {
 		NodeDirectory result = null;
 		try {
 			result = (NodeDirectory) super.clone();
@@ -313,8 +329,9 @@ public class NodeDirectory implements MyNodeInterface {
 		result.setDirectory(new File(this.getDirectory().getPath()));
 
 		result.setSons(new ArrayList<MyNodeInterface>());
+		result.setFather((NodeDirectory) pere);
 		for (MyNodeInterface currentNode : this.getSons()) {
-			result.addSon(currentNode.clone());
+			result.addSon(currentNode.clone(result));
 		}
 
 		result.setHash(new String(this.getHash()));
@@ -356,15 +373,14 @@ public class NodeDirectory implements MyNodeInterface {
 		return somme;
 	}
 
-	/*
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		// test clone
 		NodeDirectory r1 = (NodeDirectory) NodeDirectory.NodeFactory
-				.createINode(new File("C:\\Users\\val-5\\Pictures\\test"));
+				.createINode(new File("C:\\Users\\val-5\\Pictures\\test"), null);
 		long end = System.currentTimeMillis();
 		r1.computeExtension();
 	
-		NodeDirectory r2 = r1.clone();
+		NodeDirectory r2 = r1.clone(null);
 		System.out.println("ref r1: " + r1);
 		System.out.println("ref r2: " + r2);
 	
@@ -390,6 +406,12 @@ public class NodeDirectory implements MyNodeInterface {
 		System.out.println("extension r1: " + r1.extension);
 		System.out.println("extension r2: " + r2.extension);
 	
+		System.out.println("father r1: " + r1.father);
+		System.out.println("father r2: " + r2.father);
+		r1.father = new NodeDirectory();
+		System.out.println("father r1: " + r1.father);
+		System.out.println("father r2: " + r2.father);
+	
 		//Clone ok
 		try {
 			r1.finalize();
@@ -398,6 +420,10 @@ public class NodeDirectory implements MyNodeInterface {
 			e.printStackTrace();
 		}
 		System.out.println(r2);
+		System.out.println(r2.directory);
+		System.out.println(r2.sons);
+		System.out.println(r2.extension);
+		System.out.println(r2.father);
 	
 	}*/
 

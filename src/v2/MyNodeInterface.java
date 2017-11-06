@@ -9,14 +9,14 @@ import java.io.Serializable;
 public interface MyNodeInterface extends ServiceNode, Cloneable, Serializable {
 	public void computHash();
 
-	public MyNodeInterface createINode(File f);
+	public MyNodeInterface createINode(File f, ServiceNode pere);
 
 	//DebutFiltres
 	public String computeExtension();
 
 	public String[] extension();
 
-	public MyNodeInterface clone();
+	public MyNodeInterface clone(MyNodeInterface pere);
 
 	public void effectiveFilter(String[] filtres);
 
