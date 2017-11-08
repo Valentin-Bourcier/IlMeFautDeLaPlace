@@ -15,11 +15,12 @@ import javax.swing.tree.DefaultTreeModel;
 public class NodeFile implements MyNodeInterface {
 
 	private static final long serialVersionUID = -7609107586723401900L;
+	private static final TikaFileTypeDetector fileDetector = new TikaFileTypeDetector();
 
 	private File file;
 
 	private String hash = "";
-	private String extension;
+	private String type;
 
 	long lastModificationDate = 0;
 	NodeDirectory father = null;
@@ -53,16 +54,16 @@ public class NodeFile implements MyNodeInterface {
 		return hash;
 	}
 
-	private String getExtension() {
-		return extension;
+	private String getType() {
+		return type;
 	}
 
 	private void setHash(String hash) {
 		this.hash = hash;
 	}
 
-	public void setExtension(String extension) {
-		this.extension = extension.trim();
+	public void setType(String extension) {
+		this.type = extension.trim();
 	}
 
 	private long getLastModificationDate() {
@@ -145,6 +146,13 @@ public class NodeFile implements MyNodeInterface {
 	}
 
 	@Override
+	public String[] types() {
+		return containedTypes();
+	}
+
+	/**** MyNodeInterface ****/
+
+	@Override
 	public MyNodeInterface createINode(File f, ServiceNode pere) {
 		return new NodeFile(f);
 	}
@@ -181,26 +189,28 @@ public class NodeFile implements MyNodeInterface {
 	}
 
 	// Renvoie .txt
-	public String computeExtension() {
+	public String computeFileType() {
+		String resul = "";
 		try {
-			setExtension(filename().substring(filename().lastIndexOf(".")));
-		} catch (StringIndexOutOfBoundsException e) {
-			//System.out.println("Impossible de detecter l'extension de " + this);
-			setExtension("");
+			resul = fileDetector.probeContentType(file.toPath());
+		} catch (IOException e) {
+			System.out.println(e);
 		}
-		return getExtension();
+
+		return resul;
+
 	}
 
-	public String[] extension() {
+	public String[] containedTypes() {
 		String[] result = new String[1];
-		result[1] = getExtension();
+		result[0] = getType();
 		return result;
 	}
 
 	@Override
 	public boolean isThatKind(String kind) {
 
-		return getExtension().equals(kind);
+		return getType().equals(kind);
 	}
 
 	@Override
@@ -224,7 +234,7 @@ public class NodeFile implements MyNodeInterface {
 		result.file = new File(this.file.getPath());
 		// result.father = this.father.clone();
 		result.hash = new String(this.hash());
-		result.extension = new String(this.extension);
+		result.type = new String(this.type);
 		result.setFather((NodeDirectory) pere);
 
 		return result;

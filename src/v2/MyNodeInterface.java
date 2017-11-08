@@ -12,9 +12,9 @@ public interface MyNodeInterface extends ServiceNode, Cloneable, Serializable {
 	public MyNodeInterface createINode(File f, ServiceNode pere);
 
 	//DebutFiltres
-	public String computeExtension();
+	public String computeFileType();
 
-	public String[] extension();
+	public String[] containedTypes();
 
 	public MyNodeInterface clone(MyNodeInterface pere);
 
@@ -28,15 +28,17 @@ public interface MyNodeInterface extends ServiceNode, Cloneable, Serializable {
 	public void addSon(MyNodeInterface node);
 
 	default public void serialize() {
-		ObjectOutputStream oos = null;
 		try {
 			FileOutputStream fos = new FileOutputStream("tmp.ser");
-			oos = new ObjectOutputStream(fos);
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(this);
 			oos.close();
 			fos.close();
 		} catch (IOException i) {
 			i.printStackTrace();
+
+		} finally {
+
 		}
 	}
 

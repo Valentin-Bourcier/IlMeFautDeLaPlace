@@ -25,7 +25,7 @@ public class NodeDirectory implements MyNodeInterface {
 	private File directory;
 	private ArrayList<MyNodeInterface> sons = new ArrayList<MyNodeInterface>();
 	private String hash = "";
-	public HashMap<String, String> extension = new HashMap<String, String>();
+	public HashMap<String, String> containedTypes = new HashMap<String, String>();
 	long lastModificationDate = 0;
 	NodeDirectory father = null;
 
@@ -74,12 +74,12 @@ public class NodeDirectory implements MyNodeInterface {
 		this.hash = hash;
 	}
 
-	private HashMap<String, String> getExtension() {
-		return extension;
+	protected HashMap<String, String> getContainedTypes() {
+		return containedTypes;
 	}
 
-	private void setExtension(HashMap<String, String> extension) {
-		this.extension = extension;
+	private void setContainedTypes(HashMap<String, String> extension) {
+		this.containedTypes = extension;
 	}
 
 	private long getLastModificationDate() {
@@ -197,12 +197,19 @@ public class NodeDirectory implements MyNodeInterface {
 		return sons;
 	}
 
+	@Override
 	public ServiceNode filter(String[] filtres) {
 		NodeDirectory result = this.clone(null);
 		result.effectiveFilter(filtres);
 		return result;
 	}
 
+	@Override
+	public String[] types() {
+		return containedTypes();
+	}
+
+	/**** MyNodeInterface ****/
 	@Override
 	public void effectiveFilter(String[] filtres) {
 
@@ -225,7 +232,7 @@ public class NodeDirectory implements MyNodeInterface {
 
 	@Override
 	public boolean isThatKind(String kind) {
-		return getExtension().containsKey(kind);
+		return getContainedTypes().containsKey(kind);
 	}
 
 	@Override
@@ -262,23 +269,23 @@ public class NodeDirectory implements MyNodeInterface {
 	 */
 	public void computHash() {
 		// System.out.println("Hash en cours : " + filename());
-		String stringToHash = "";
+		StringBuffer stringToHashBuffer = new StringBuffer("");
 		for (MyNodeInterface CurrentNode : getSons()) {
 			// Si fils deja hash on le recup
 			if (!(CurrentNode.hash() == null)) {
-				stringToHash += CurrentNode.hash();
+				stringToHashBuffer.append(CurrentNode.hash());
 			}
 			// Sinon on le calcule puis on le recup
 			else {
 				CurrentNode.computHash();
-				stringToHash += CurrentNode.hash();
+				stringToHashBuffer.append(CurrentNode.hash());
 			}
 			//On répercute le changement de hash sur l'ensemble de l'arbo
 			if (getFather() != null) {
 				getFather().computHash();
 			}
 		}
-
+		String stringToHash = stringToHashBuffer.toString();
 		byte[] bytesOfMessage;
 		byte[] thedigest = null;
 		try {
@@ -292,29 +299,39 @@ public class NodeDirectory implements MyNodeInterface {
 
 			e.printStackTrace();
 		}
-		this.setHash(new String(thedigest, StandardCharsets.UTF_8));
+		if (thedigest != null) {
+			this.setHash(new String(thedigest, StandardCharsets.UTF_8));
+
+			//On répercute le changement de hash sur l'ensemble de l'arbo
+			if (getFather() != null) {
+				getFather().computHash();
+			}
+		}
 
 	}
 
 	// retourne la liste de tous les types de fichier contenus dans le dossier
-	public String computeExtension() {
-		String listeExtension = "";
-		for (ServiceNode currentNode : sons) {
-			listeExtension += ((MyNodeInterface) currentNode).computeExtension() + " ";
+	public String computeFileType() {
+		String listeTypes = "";
+		String guessedType = "";
+		for (MyNodeInterface currentNode : sons) {
+			guessedType = currentNode.computeFileType();
+			if (guessedType != null)//Si la detection de type échoue, elle renvoie null
+				listeTypes += guessedType + " ";
 		}
-		String[] tabExtension = listeExtension.trim().split(" ");
-		for (String currentExtension : tabExtension) {
-			extension.put(currentExtension.trim(), currentExtension.trim());
+		String[] tabTypes = listeTypes.trim().split(" ");
+		for (String currentTypes : tabTypes) {
+			containedTypes.put(currentTypes.trim(), currentTypes.trim());
 		}
 		//System.out.println(extension.size());
-		return listeExtension;
+		return listeTypes;
 	}
 
 	// Sera utilisé pour connaitre tous les types de fichier contenus dans le
 	// dossier
-	public String[] extension() {
+	public String[] containedTypes() {
 		String[] type = new String[1];
-		return extension.keySet().toArray(type);
+		return containedTypes.keySet().toArray(type);
 	}
 
 	@Override
@@ -336,11 +353,11 @@ public class NodeDirectory implements MyNodeInterface {
 
 		result.setHash(new String(this.getHash()));
 
-		result.setExtension(new HashMap<String, String>());
-		for (Map.Entry<String, String> currentEntry : this.getExtension().entrySet()) {
+		result.setContainedTypes(new HashMap<String, String>());
+		for (Map.Entry<String, String> currentEntry : this.getContainedTypes().entrySet()) {
 			String key = new String(currentEntry.getKey());
 			String value = new String(currentEntry.getValue());
-			result.extension.put(key, value);
+			result.containedTypes.put(key, value);
 		}
 		return result;
 	}

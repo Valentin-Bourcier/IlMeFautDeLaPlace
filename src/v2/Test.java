@@ -8,13 +8,13 @@ public class Test {
 
 		long start = System.currentTimeMillis();
 		MyNodeInterface root = (MyNodeInterface) NodeDirectory.NodeFactory
-				.createINode(new File("C:\\Users\\val-5\\Pictures\\test"), null);
+				.createINode(new File("C:\\Users\\val-5\\Pictures"), null);
 		long endCrawl = System.currentTimeMillis();
 		System.out.println("Temps de parcours(ms): " + (endCrawl - start));
-		root.computeExtension();
+		root.computeFileType();
 		long endComputeExtension = System.currentTimeMillis();
 		System.out.println("Temps de computeExtension(ms): " + (endComputeExtension - endCrawl));
-		root.computHash();
+		//root.computHash();
 		long endHash = System.currentTimeMillis();
 		System.out.println("Temps de hachage(ms): " + (endHash - endComputeExtension));
 		root.serialize();
@@ -23,7 +23,10 @@ public class Test {
 		MyNodeInterface test = NodeDirectory.NodeFactory.deserialize();
 		long endDeSerialization = System.currentTimeMillis();
 		System.out.println("Temps de deserialization(ms): " + (endDeSerialization - endSerialization));
-
+		for (String currentString : test.containedTypes()) {
+			System.out.println(currentString);
+		}
+		/*
 		System.out.println(root.child().size());
 		System.out.println(test.child().size());
 		System.out.println(root.toString().equals(test.toString()));
@@ -35,7 +38,7 @@ public class Test {
 		System.out.println(((NodeDirectory) root.child().get(0)).getFather());
 		System.out.println(((NodeDirectory) test).getFather());
 		System.out.println(((NodeDirectory) test.child().get(0)).getFather());
-
+		*/
 		/*for (ServiceNode currentNode : root.child()) {
 			System.out.println(currentNode.filename());
 		}

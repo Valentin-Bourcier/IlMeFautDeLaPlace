@@ -28,6 +28,8 @@ public interface ServiceNode {
 
 	public ArrayList<ServiceNode> child();
 
+	public String[] types();
+
 	public ServiceNode filter(String[] filtres);
 
 }
