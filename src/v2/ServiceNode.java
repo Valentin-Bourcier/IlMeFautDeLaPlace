@@ -2,13 +2,12 @@ package v2;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.tree.DefaultTreeModel;
 
-import com.sun.istack.internal.Nullable;
-
 public interface ServiceNode {
-	public ServiceNode tree(String path, @Nullable ServiceNode pere);
+	public ServiceNode tree(String path);
 
 	public ServiceNode tree(String path, int depth);
 
@@ -31,5 +30,12 @@ public interface ServiceNode {
 	public String[] types();
 
 	public ServiceNode filter(String[] filtres);
+
+	default public boolean isDirectory() {
+		return false;
+	}
+
+	//LARACHE
+	public HashMap<String, ArrayList<ServiceNode>> getDoublons();
 
 }

@@ -8,13 +8,13 @@ public class Test {
 
 		long start = System.currentTimeMillis();
 		MyNodeInterface root = (MyNodeInterface) NodeDirectory.NodeFactory
-				.createINode(new File("C:\\Users\\val-5\\Pictures"), null);
+				.createINode(new File("/home/valentin/.local"));
 		long endCrawl = System.currentTimeMillis();
 		System.out.println("Temps de parcours(ms): " + (endCrawl - start));
 		root.computeFileType();
 		long endComputeExtension = System.currentTimeMillis();
 		System.out.println("Temps de computeExtension(ms): " + (endComputeExtension - endCrawl));
-		//root.computHash();
+		root.computHash();
 		long endHash = System.currentTimeMillis();
 		System.out.println("Temps de hachage(ms): " + (endHash - endComputeExtension));
 		root.serialize();
@@ -23,9 +23,16 @@ public class Test {
 		MyNodeInterface test = NodeDirectory.NodeFactory.deserialize();
 		long endDeSerialization = System.currentTimeMillis();
 		System.out.println("Temps de deserialization(ms): " + (endDeSerialization - endSerialization));
-		for (String currentString : test.containedTypes()) {
-			System.out.println(currentString);
-		}
+		System.out.println(root.hash());
+
+		long begindoublons = System.currentTimeMillis();
+		root.computeDoublons();
+		long enddoublons = System.currentTimeMillis();
+		System.out.println("Temps pour compute les doublons(ms) : " + (enddoublons - begindoublons));
+		System.out.println(root.getDoublons().size());
+		//for (String currentString : test.containedTypes()) {
+		//	System.out.println(currentString);
+		//}
 		/*
 		System.out.println(root.child().size());
 		System.out.println(test.child().size());

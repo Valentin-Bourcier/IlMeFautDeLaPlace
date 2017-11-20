@@ -9,6 +9,7 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.tree.DefaultTreeModel;
 
@@ -23,7 +24,6 @@ public class NodeFile implements MyNodeInterface {
 	private String type;
 
 	long lastModificationDate = 0;
-	NodeDirectory father = null;
 
 	// BUILDERS
 	NodeFile() {
@@ -40,10 +40,9 @@ public class NodeFile implements MyNodeInterface {
 		file = new File(filename);
 	}
 
-	NodeFile(File f, long date, NodeDirectory father) {
+	NodeFile(File f, long date) {
 		file = f;
 		lastModificationDate = date;
-		this.father = father;
 	}
 
 	private File getFile() {
@@ -51,6 +50,8 @@ public class NodeFile implements MyNodeInterface {
 	}
 
 	private String getHash() {
+		if (hash.isEmpty())
+			this.computHash();
 		return hash;
 	}
 
@@ -74,16 +75,8 @@ public class NodeFile implements MyNodeInterface {
 		lastModificationDate = date;
 	}
 
-	private NodeDirectory getFather() {
-		return father;
-	}
-
-	protected void setFather(NodeDirectory father) {
-		this.father = father;
-	}
-
 	@Override
-	public ServiceNode tree(String path, ServiceNode pere) {
+	public ServiceNode tree(String path) {
 		return new NodeFile(path);
 	}
 
@@ -153,7 +146,7 @@ public class NodeFile implements MyNodeInterface {
 	/**** MyNodeInterface ****/
 
 	@Override
-	public MyNodeInterface createINode(File f, ServiceNode pere) {
+	public MyNodeInterface createINode(File f) {
 		return new NodeFile(f);
 	}
 
@@ -163,6 +156,11 @@ public class NodeFile implements MyNodeInterface {
 	}
 
 	// MyInterfaceNode
+	@Override
+	public ArrayList<MyNodeInterface> getChildAsMyNodeInterface() {
+		throw new UnsupportedOperationException();
+	}
+
 	@Override
 	public void computHash() {
 		// System.out.println("Hash en cours : " + filename());
@@ -182,10 +180,7 @@ public class NodeFile implements MyNodeInterface {
 
 			e.printStackTrace();
 		}
-		//On répercute le changement de hash sur l'ensemble de l'arbo
-		if (getFather() != null) {
-			getFather().computHash();
-		}
+
 	}
 
 	// Renvoie .txt
@@ -223,7 +218,7 @@ public class NodeFile implements MyNodeInterface {
 	}
 
 	@Override
-	public NodeFile clone(MyNodeInterface pere) {
+	public NodeFile clone() {
 		NodeFile result = null;
 		try {
 			result = (NodeFile) super.clone();
@@ -235,7 +230,6 @@ public class NodeFile implements MyNodeInterface {
 		// result.father = this.father.clone();
 		result.hash = new String(this.hash());
 		result.type = new String(this.type);
-		result.setFather((NodeDirectory) pere);
 
 		return result;
 	}
@@ -269,6 +263,20 @@ public class NodeFile implements MyNodeInterface {
 		return nf;
 	}
 
+	public void computeDoublons() {
+		if (NodeDirectory.doublons.containsKey(getHash()))
+			NodeDirectory.doublons.get(getHash()).add(this);
+		else {
+			ArrayList<ServiceNode> tmp = new ArrayList<ServiceNode>();
+			tmp.add(this);
+			NodeDirectory.doublons.put(getHash(), tmp);
+		}
+	}
+
+	public HashMap<String, ArrayList<ServiceNode>> getDoublons() {
+		return NodeDirectory.doublons;
+	}
+
 	/*
 	public static void main(String[] args) {
 	//Test clone
@@ -279,28 +287,28 @@ public class NodeFile implements MyNodeInterface {
 	NodeFile n2 = n1.clone();
 	System.out.println("ref n2: " + n2);
 	
-	// File différent OK
+	// File diffï¿½rent OK
 	System.out.println("n1 file: " + n1.file);
 	System.out.println("n2 file: " + n2.file);
 	n1.file = new File("test");
 	System.out.println("n1 file: " + n1.file);
 	System.out.println("n2 file: " + n2.file);
 	
-	// Hash différent ok
+	// Hash diffï¿½rent ok
 	System.out.println("n1 hash: " + n1.hash());
 	System.out.println("n2 hash: " + n2.hash());
 	n1.hash = "test";
 	System.out.println("n1 hash: " + n1.hash());
 	System.out.println("n2 hash: " + n2.hash());
 	
-	// Extension différente ok
+	// Extension diffï¿½rente ok
 	System.out.println("n1 extension: " + n1.extension);
 	System.out.println("n2 extension: " + n2.extension);
 	n1.extension = "test";
 	System.out.println("n1 extension: " + n1.extension);
 	System.out.println("n2 extension: " + n2.extension);
 	
-	// TEST FINAL OK, le node d'origine et son clone sont indépendants
+	// TEST FINAL OK, le node d'origine et son clone sont indï¿½pendants
 	try {
 	    n1.finalize();
 	} catch (Throwable e) {
