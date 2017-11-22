@@ -78,6 +78,10 @@ public class NodeDirectory implements MyNodeInterface {
 		this.hash = hash;
 	}
 
+	public void ChangerHash(String cachedHash) {
+		this.setHash(cachedHash);
+	}
+
 	protected HashMap<String, String> getContainedTypes() {
 		return containedTypes;
 	}
@@ -264,16 +268,6 @@ public class NodeDirectory implements MyNodeInterface {
 
 		return s;
 
-	}
-
-	@Override
-	public void saveTreeIntoCacheFile() {
-		this.serialize();
-	}
-
-	@Override
-	public ServiceNode LoadTreeFromCacheFile() {
-		return this.deserialize();
 	}
 
 	// MyNodeInterface

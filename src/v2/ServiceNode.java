@@ -83,6 +83,11 @@ public interface ServiceNode {
 	}
 
 	/**
+	 * Vérifie les doublons
+	 */
+	void computeDoublons();
+
+	/**
 	 * 
 	 * @return une hash map de doublons
 	 */
@@ -98,7 +103,7 @@ public interface ServiceNode {
 	 * 
 	 * @return un arbre à partir du fichier de cache
 	 */
-	public ServiceNode LoadTreeFromCacheFile();
+	public ServiceNode LoadTreeFromCacheFile(String path);
 
 	/**
 	 * 

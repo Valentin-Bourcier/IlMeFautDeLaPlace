@@ -69,6 +69,10 @@ public class NodeFile implements MyNodeInterface {
 		this.hash = hash;
 	}
 
+	public void ChangerHash(String cachedHash) {
+		this.setHash(cachedHash);
+	}
+
 	public void setType(String extension) {
 		this.type = extension.trim();
 	}
@@ -111,7 +115,7 @@ public class NodeFile implements MyNodeInterface {
 
 	@Override
 	public long weight() {
-		System.out.println(filename() + " ==> " + file.length());
+		//System.out.println(filename() + " ==> " + file.length());
 		return file.length();
 	}
 
@@ -140,16 +144,6 @@ public class NodeFile implements MyNodeInterface {
 	@Override
 	public String[] types() {
 		return containedTypes();
-	}
-
-	@Override
-	public void saveTreeIntoCacheFile() {
-		this.serialize();
-	}
-
-	@Override
-	public ServiceNode LoadTreeFromCacheFile() {
-		return this.deserialize();
 	}
 
 	@Override

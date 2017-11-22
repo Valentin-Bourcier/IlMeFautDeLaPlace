@@ -7,6 +7,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import lightweight_cache_system.CacheNode;
+
 public interface MyNodeInterface extends ServiceNode, Cloneable, Serializable {
 	/**
 	 * Calcul le hash des fichiers de l'arbre. Le point de départ est le noeud
@@ -23,6 +25,9 @@ public interface MyNodeInterface extends ServiceNode, Cloneable, Serializable {
 
 	//Getters
 	public ArrayList<MyNodeInterface> getChildAsMyNodeInterface();
+
+	//Setters (nécessaire pour reprendre le cache)
+	public void ChangerHash(String cachedHash);
 
 	//DebutFiltres
 	public String computeFileType();
@@ -67,6 +72,35 @@ public interface MyNodeInterface extends ServiceNode, Cloneable, Serializable {
 		} finally {
 
 		}
+	}
+
+	@Override
+	default public void saveTreeIntoCacheFile() {
+		//this.serialize();
+		CacheNode cache = new CacheNode(this);
+		cache.serialize();
+	}
+
+	@Override
+	default public ServiceNode LoadTreeFromCacheFile(String path) {
+		CacheNode cache = new CacheNode();
+		cache = cache.deserialize();
+		MyNodeInterface root = (MyNodeInterface) NodeDirectory.NodeFactory.createINode(new File(path));
+		if (cache.contains(root.absolutePath())
+				&& cache.getAssociatedDate(root.absolutePath()) == (root.lastModificationDate())) {
+			root.ChangerHash(cache.getAssociatedHash(path));
+		}
+
+		for (MyNodeInterface currentNode : root.getChildAsMyNodeInterface()) {
+			if (cache.contains(currentNode.absolutePath())) {
+				if (cache.getAssociatedDate(currentNode.absolutePath()) == currentNode.lastModificationDate()) {
+					currentNode.ChangerHash(cache.getAssociatedHash(path));
+				}
+			}
+		}
+
+		return root;
+		//return this.deserialize();
 	}
 
 	public MyNodeInterface deserialize();
