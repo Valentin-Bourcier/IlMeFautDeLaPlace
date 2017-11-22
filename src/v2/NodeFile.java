@@ -11,7 +11,11 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+
+import convert_to_default_mutable_tree_node.AbstractStrategyConvert;
+import convert_to_default_mutable_tree_node.StrategyConvertFile;
 
 public class NodeFile implements MyNodeInterface {
 
@@ -21,7 +25,9 @@ public class NodeFile implements MyNodeInterface {
 	private File file;
 
 	private String hash = "";
-	private String type;
+	private String type = "";
+
+	private AbstractStrategyConvert strategyConversion = new StrategyConvertFile(this);
 
 	long lastModificationDate = 0;
 
@@ -81,15 +87,8 @@ public class NodeFile implements MyNodeInterface {
 	}
 
 	@Override
-	public ServiceNode tree(String path, int depth) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ArrayList<File> doublons() {
-		// TODO Auto-generated method stub
-		return null;
+	public DefaultMutableTreeNode getTreeAsDefaultMutableTreeNode(DefaultMutableTreeNode pere) {
+		return strategyConversion.convertToDefaultMutableTreeNode(pere);
 	}
 
 	@Override
@@ -112,8 +111,8 @@ public class NodeFile implements MyNodeInterface {
 
 	@Override
 	public long weight() {
-
-		return file.getTotalSpace();
+		System.out.println(filename() + " ==> " + file.length());
+		return file.length();
 	}
 
 	@Override
@@ -141,6 +140,22 @@ public class NodeFile implements MyNodeInterface {
 	@Override
 	public String[] types() {
 		return containedTypes();
+	}
+
+	@Override
+	public void saveTreeIntoCacheFile() {
+		this.serialize();
+	}
+
+	@Override
+	public ServiceNode LoadTreeFromCacheFile() {
+		return this.deserialize();
+	}
+
+	@Override
+	public MyNodeInterface updateTree() {
+		//TODO
+		return null;
 	}
 
 	/**** MyNodeInterface ****/
@@ -227,7 +242,6 @@ public class NodeFile implements MyNodeInterface {
 			e.printStackTrace();
 		}
 		result.file = new File(this.file.getPath());
-		// result.father = this.father.clone();
 		result.hash = new String(this.hash());
 		result.type = new String(this.type);
 

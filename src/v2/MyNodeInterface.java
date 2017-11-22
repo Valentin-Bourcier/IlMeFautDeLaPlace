@@ -71,10 +71,6 @@ public interface MyNodeInterface extends ServiceNode, Cloneable, Serializable {
 
 	public MyNodeInterface deserialize();
 
-	default public int getNbNode() {
-		return 1;
-	}
-
 	//DOUBLONS
 	public void computeDoublons();
 }

@@ -12,13 +12,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+
+import convert_to_default_mutable_tree_node.AbstractStrategyConvert;
+import convert_to_default_mutable_tree_node.StrategyConvertDirectory;
 
 public class NodeDirectory implements MyNodeInterface {
 
 	private static final long serialVersionUID = -115364763555925482L;
 
-	static final protected MyNodeInterface NodeFactory = new NodeDirectory();
+	public static final MyNodeInterface NodeFactory = new NodeDirectory();
 
 	private File directory;
 	private ArrayList<MyNodeInterface> sons = new ArrayList<MyNodeInterface>();
@@ -26,6 +30,8 @@ public class NodeDirectory implements MyNodeInterface {
 	public HashMap<String, String> containedTypes = new HashMap<String, String>();
 	long lastModificationDate = 0;
 	static HashMap<String, ArrayList<ServiceNode>> doublons = new HashMap<String, ArrayList<ServiceNode>>();
+
+	private AbstractStrategyConvert strategyConversion = new StrategyConvertDirectory(this);
 
 	// BUILDERS
 	NodeDirectory() {
@@ -63,7 +69,8 @@ public class NodeDirectory implements MyNodeInterface {
 	}
 
 	private String getHash() {
-
+		if (hash.isEmpty())
+			this.computHash();
 		return hash;
 	}
 
@@ -134,15 +141,8 @@ public class NodeDirectory implements MyNodeInterface {
 	}
 
 	@Override
-	public ServiceNode tree(String path, int depth) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ArrayList<File> doublons() {
-		// TODO Auto-generated method stub
-		return null;
+	public DefaultMutableTreeNode getTreeAsDefaultMutableTreeNode(DefaultMutableTreeNode pere) {
+		return strategyConversion.convertToDefaultMutableTreeNode(pere);
 	}
 
 	@Override
@@ -165,8 +165,10 @@ public class NodeDirectory implements MyNodeInterface {
 
 	@Override
 	public long weight() {
-
-		return directory.getTotalSpace();
+		long poids = 0;
+		for (MyNodeInterface currentNode : getChildAsMyNodeInterface())
+			poids = poids + currentNode.weight();
+		return poids + this.directory.length();
 	}
 
 	@Override
@@ -199,6 +201,14 @@ public class NodeDirectory implements MyNodeInterface {
 	@Override
 	public String[] types() {
 		return containedTypes();
+	}
+
+	@Override
+	public MyNodeInterface updateTree() {
+		//TODO
+		MyNodeInterface updatedTree = this.clone();
+		File f = new File(this.absolutePath());
+		return null;
 	}
 
 	/**** MyNodeInterface ****/
@@ -254,6 +264,16 @@ public class NodeDirectory implements MyNodeInterface {
 
 		return s;
 
+	}
+
+	@Override
+	public void saveTreeIntoCacheFile() {
+		this.serialize();
+	}
+
+	@Override
+	public ServiceNode LoadTreeFromCacheFile() {
+		return this.deserialize();
 	}
 
 	// MyNodeInterface
@@ -321,6 +341,8 @@ public class NodeDirectory implements MyNodeInterface {
 	// dossier
 	public String[] containedTypes() {
 		String[] type = new String[1];
+		if (containedTypes.size() == 0)
+			this.computeFileType();
 		return containedTypes.keySet().toArray(type);
 	}
 

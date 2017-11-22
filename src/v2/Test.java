@@ -8,10 +8,10 @@ public class Test {
 
 		long start = System.currentTimeMillis();
 		MyNodeInterface root = (MyNodeInterface) NodeDirectory.NodeFactory
-				.createINode(new File("/home/valentin/.local"));
+				.createINode(new File("/home/valentin/Documents/Cours/retroconception"));
 		long endCrawl = System.currentTimeMillis();
 		System.out.println("Temps de parcours(ms): " + (endCrawl - start));
-		root.computeFileType();
+		/*root.computeFileType();
 		long endComputeExtension = System.currentTimeMillis();
 		System.out.println("Temps de computeExtension(ms): " + (endComputeExtension - endCrawl));
 		root.computHash();
@@ -24,12 +24,14 @@ public class Test {
 		long endDeSerialization = System.currentTimeMillis();
 		System.out.println("Temps de deserialization(ms): " + (endDeSerialization - endSerialization));
 		System.out.println(root.hash());
-
+		
 		long begindoublons = System.currentTimeMillis();
 		root.computeDoublons();
 		long enddoublons = System.currentTimeMillis();
 		System.out.println("Temps pour compute les doublons(ms) : " + (enddoublons - begindoublons));
 		System.out.println(root.getDoublons().size());
+		
+		root.getTreeAsDefaultMutableTreeNode(null);
 		//for (String currentString : test.containedTypes()) {
 		//	System.out.println(currentString);
 		//}

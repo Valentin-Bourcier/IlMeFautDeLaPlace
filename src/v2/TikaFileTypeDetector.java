@@ -30,7 +30,7 @@ public class TikaFileTypeDetector extends FileTypeDetector {
 
 		// Specification says to return null if we could not 
 		// conclusively determine the file type
-		return null;
+		return "unkown type";
 	}
 
 }
