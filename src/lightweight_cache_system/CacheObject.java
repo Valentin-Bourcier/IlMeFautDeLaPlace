@@ -1,10 +1,8 @@
-package efficient_cache_system;
+package lightweight_cache_system;
 
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 /**
@@ -30,7 +28,7 @@ public class CacheObject implements Serializable {
 		return lasteModificationDate;
 	}
 
-	public void serialize() {
+	/*public void serialize() {
 		try {
 			FileOutputStream fos = new FileOutputStream("tmp.ser");
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -39,11 +37,14 @@ public class CacheObject implements Serializable {
 			fos.close();
 		} catch (IOException i) {
 			i.printStackTrace();
-
+	
 		} finally {
-
+			System.out.println("Serialisation");
+			System.out.println(this.hash + " ===> " + this.lasteModificationDate);
+			System.out.println("Fin Serialization");
+	
 		}
-	}
+	}*/
 
 	public CacheObject deserialize() {
 		CacheObject cd = null;
