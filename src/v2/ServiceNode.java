@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 
 public interface ServiceNode {
 	/**
@@ -21,8 +20,6 @@ public interface ServiceNode {
 	 * @return l'arbre de ServiceNode courant sous forme de DefaultMutableTreeNode
 	 */
 	public DefaultMutableTreeNode getTreeAsDefaultMutableTreeNode(DefaultMutableTreeNode pere);
-
-	public DefaultTreeModel treeModel();
 
 	/**
 	 * 
@@ -112,7 +109,5 @@ public interface ServiceNode {
 	default public int getNbNode() {
 		return 1;
 	}
-
-	public ServiceNode updateTree();
 
 }

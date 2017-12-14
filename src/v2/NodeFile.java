@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 
 import convert_to_default_mutable_tree_node.AbstractStrategyConvert;
 import convert_to_default_mutable_tree_node.StrategyConvertFile;
@@ -96,12 +95,6 @@ public class NodeFile implements MyNodeInterface {
 	}
 
 	@Override
-	public DefaultTreeModel treeModel() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public String filename() {
 
 		return file.getName();
@@ -144,12 +137,6 @@ public class NodeFile implements MyNodeInterface {
 	@Override
 	public String[] types() {
 		return containedTypes();
-	}
-
-	@Override
-	public MyNodeInterface updateTree() {
-		//TODO
-		return null;
 	}
 
 	/**** MyNodeInterface ****/
@@ -284,48 +271,5 @@ public class NodeFile implements MyNodeInterface {
 	public HashMap<String, ArrayList<ServiceNode>> getDoublons() {
 		return NodeDirectory.doublons;
 	}
-
-	/*
-	public static void main(String[] args) {
-	//Test clone
-	NodeFile n1 = new NodeFile("C:\\Users\\val-5\\Pictures\\OIM.jpg");
-	n1.computHash();
-	n1.computeExtension();
-	System.out.println("ref n1: " + n1);
-	NodeFile n2 = n1.clone();
-	System.out.println("ref n2: " + n2);
-	
-	// File diff�rent OK
-	System.out.println("n1 file: " + n1.file);
-	System.out.println("n2 file: " + n2.file);
-	n1.file = new File("test");
-	System.out.println("n1 file: " + n1.file);
-	System.out.println("n2 file: " + n2.file);
-	
-	// Hash diff�rent ok
-	System.out.println("n1 hash: " + n1.hash());
-	System.out.println("n2 hash: " + n2.hash());
-	n1.hash = "test";
-	System.out.println("n1 hash: " + n1.hash());
-	System.out.println("n2 hash: " + n2.hash());
-	
-	// Extension diff�rente ok
-	System.out.println("n1 extension: " + n1.extension);
-	System.out.println("n2 extension: " + n2.extension);
-	n1.extension = "test";
-	System.out.println("n1 extension: " + n1.extension);
-	System.out.println("n2 extension: " + n2.extension);
-	
-	// TEST FINAL OK, le node d'origine et son clone sont ind�pendants
-	try {
-	    n1.finalize();
-	} catch (Throwable e) {
-	    e.printStackTrace();
-	}
-	System.out.println(n2);
-	System.out.println("n2 file: " + n2.file);
-	System.out.println("n2 hash: " + n2.hash());
-	System.out.println("n2 extension: " + n2.extension);
-	}*/
 
 }

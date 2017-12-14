@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 
 import convert_to_default_mutable_tree_node.AbstractStrategyConvert;
 import convert_to_default_mutable_tree_node.StrategyConvertDirectory;
@@ -105,6 +104,16 @@ public class NodeDirectory implements MyNodeInterface {
 	}
 
 	// FABRIQUE
+	/**
+	 * Construit une arborescence de Noeud à partir du fichier/dossier passé en
+	 * paramètre
+	 * 
+	 * @param File
+	 *            fichier à partir duquel l'arbo est construite
+	 * 
+	 * @return {@link MyNodeInterface} la racine de l'arbo construite
+	 * 
+	 */
 	public MyNodeInterface createINode(File f) {
 		try {
 			if (f.isDirectory()) {
@@ -133,6 +142,16 @@ public class NodeDirectory implements MyNodeInterface {
 	}
 
 	// ServiceNode
+	/**
+	 * Construit une arborescence de Noeud à partir du fichier/dossier passé en
+	 * paramètre
+	 * 
+	 * @param File
+	 *            fichier à partir duquel l'arbo est construite
+	 * 
+	 * @return {@link ServiceNode} la racine de l'arbo construite
+	 * 
+	 */
 	@Override
 	public ServiceNode tree(String path) {
 		File f = new File(path);
@@ -147,12 +166,6 @@ public class NodeDirectory implements MyNodeInterface {
 	@Override
 	public DefaultMutableTreeNode getTreeAsDefaultMutableTreeNode(DefaultMutableTreeNode pere) {
 		return strategyConversion.convertToDefaultMutableTreeNode(pere);
-	}
-
-	@Override
-	public DefaultTreeModel treeModel() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -205,14 +218,6 @@ public class NodeDirectory implements MyNodeInterface {
 	@Override
 	public String[] types() {
 		return containedTypes();
-	}
-
-	@Override
-	public MyNodeInterface updateTree() {
-		//TODO
-		MyNodeInterface updatedTree = this.clone();
-		File f = new File(this.absolutePath());
-		return null;
 	}
 
 	/**** MyNodeInterface ****/
@@ -272,9 +277,9 @@ public class NodeDirectory implements MyNodeInterface {
 
 	// MyNodeInterface
 	@Override
-	/*
-	 * Le hash d'un dossier sera le hash de la concatenation des hash
-	 * fichiers/sous dossiers(non-Javadoc)
+	/**
+	 * Le hash d'un dossier sera le hash de la concatenation des hash fichiers/sous
+	 * dossiers
 	 * 
 	 * @see v2.MyNodeInterface#computHash()
 	 */

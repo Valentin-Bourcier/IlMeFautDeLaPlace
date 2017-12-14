@@ -18,12 +18,22 @@ import v2.ServiceNode;
  *         l'arbre sous la forme d'une hashMap
  */
 public class CacheNode implements Serializable {
+	/**
+	 * pour calmer java
+	 */
+	private static final long serialVersionUID = -7320632609738944128L;
 	MyNodeInterface root;
 	public HashMap<String, CacheObject> map = new HashMap<String, CacheObject>();
 
 	public CacheNode() {
 	}
 
+	/**
+	 * 
+	 * 
+	 * @param root
+	 *            la racine de l'arbre que l'on souhaite mettre en cache
+	 */
 	public CacheNode(MyNodeInterface root) {
 		this.root = root;
 		map = new HashMap<String, CacheObject>(root.getNbNode());

@@ -15,6 +15,15 @@ public class TikaFileTypeDetector extends FileTypeDetector {
 	}
 
 	@Override
+	/**
+	 * A l'aide de la lib appache tika, essaie de trouver le type du fichier designé
+	 * par path
+	 * 
+	 * @param Path
+	 *            le path du fichier dont on veut connaitre le type
+	 * 
+	 * @return String le type du fichier inféré par Tika
+	 */
 	public String probeContentType(Path path) throws IOException {
 		// Try to detect based on the file name only for efficiency
 		String fileNameDetect = tika.detect(path.toString());

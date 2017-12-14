@@ -1,6 +1,5 @@
 package v2;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -11,7 +10,7 @@ public class TestAsFinalClient {
 	public static void main(String[] args) {
 		//1 Construire un Arbre à partir d'un path
 		String path = "/home/valentin/Documents/Cours/acdc/testArbo";
-		ServiceNode root = (MyNodeInterface) NodeDirectory.NodeFactory.createINode(new File(path));
+		ServiceNode root = (MyNodeInterface) NodeDirectory.NodeFactory.tree(path);
 
 		//2 Obtenir le hash d'un noeud /!\ calcul le hash si cela n'a pas été fait précedemment
 		System.out.println("Hash de la racine de l'arbre :" + root.hash());

@@ -30,14 +30,48 @@ public interface MyNodeInterface extends ServiceNode, Cloneable, Serializable {
 	public void ChangerHash(String cachedHash);
 
 	//DebutFiltres
+	/**
+	 * Calcule tous les types de fichiers portés par le noeud courant
+	 * 
+	 * @return une string contenant le type de fichier pour un NodeFile et une
+	 *         string contenant tous les types de fichiers contenus dans le dossier
+	 *         pour un Node Directory
+	 * 
+	 */
 	public String computeFileType();
 
+	/**
+	 * Si un appel à la fonction computeFileType() a déja été effectué cette methode
+	 * ce comporte comme un getter, sinon, computeFileType est appelé puis le
+	 * tableau de string est retourné.
+	 * 
+	 * @return un tableau de string contenant les types de fichiers portés par le
+	 *         noeud courant
+	 */
 	public String[] containedTypes();
 
+	/**
+	 * 
+	 * @return un clone du noeud courant
+	 */
 	public MyNodeInterface clone();
 
+	/**
+	 * Cette methode élague l'arbre courant pour ne garder que les noeuds portant
+	 * des fichiers dont le type est un de ceux passés en paramètres.
+	 * 
+	 * @param filtres
+	 *            la liste des types de fichier que l'on souhaite récupérer
+	 */
 	public void effectiveFilter(String[] filtres);
 
+	/**
+	 * 
+	 * @param filtres
+	 *            la liste des types de fichier que l'on souhaite tester.
+	 * @return true si le noeud porte un fichier dont le type est un de ceux passés
+	 *         en paramètres.
+	 */
 	public boolean containsOneOfThose(String[] filtres);
 
 	/**
@@ -74,6 +108,9 @@ public interface MyNodeInterface extends ServiceNode, Cloneable, Serializable {
 		}
 	}
 
+	/**
+	 * sauvegarde l'arborescence à partir du noeud courant dans le fichier de cache
+	 */
 	@Override
 	default public void saveTreeIntoCacheFile() {
 		//this.serialize();
@@ -81,6 +118,11 @@ public interface MyNodeInterface extends ServiceNode, Cloneable, Serializable {
 		cache.serialize();
 	}
 
+	/**
+	 * Recrée une arborescence depuis le fichier de cache
+	 * 
+	 * @return l'arbre reconstitué à partir du fichier de cache
+	 */
 	@Override
 	default public ServiceNode LoadTreeFromCacheFile(String path) {
 		CacheNode cache = new CacheNode();
@@ -106,5 +148,9 @@ public interface MyNodeInterface extends ServiceNode, Cloneable, Serializable {
 	public MyNodeInterface deserialize();
 
 	//DOUBLONS
+	/**
+	 * Parcours l'arborescence à partir du noeud courant afin d'identifier les
+	 * doublons.
+	 */
 	public void computeDoublons();
 }
