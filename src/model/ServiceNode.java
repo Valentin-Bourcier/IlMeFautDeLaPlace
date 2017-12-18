@@ -5,6 +5,13 @@ import java.util.HashMap;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
+/**
+ * API commune à tous nos projets. Fourni un ensemble de services utiles au
+ * réalisateur de la partie graphique
+ * 
+ * @author valentin
+ *
+ */
 public interface ServiceNode {
 	/**
 	 * 
@@ -97,7 +104,9 @@ public interface ServiceNode {
 	public void saveTreeIntoCacheFile();
 
 	/**
-	 * 
+	 * @param path
+	 *            l'endroit du sytème à partir duquel l'arbre doit être reconstruit.
+	 *            /!\ ce n'est PAS le path vers le fichier cache
 	 * @return un arbre à partir du fichier de cache
 	 */
 	public ServiceNode LoadTreeFromCacheFile(String path);

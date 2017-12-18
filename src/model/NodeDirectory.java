@@ -17,19 +17,48 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import convert_to_default_mutable_tree_node.AbstractStrategyConvert;
 import convert_to_default_mutable_tree_node.StrategyConvertDirectory;
 
+/**
+ * Noeud de l'arbre portant un dossier
+ * 
+ * @author valentin
+ *
+ * 
+ */
+
 public class NodeDirectory implements MyNodeInterface {
 
 	private static final long serialVersionUID = -115364763555925482L;
 
 	public static final MyNodeInterface NodeFactory = new NodeDirectory();
 
+	/**
+	 * Le dossier que réprésente le noeud
+	 */
 	private File directory;
+	/**
+	 * La liste des fichiers et sous dossiers du noeud courant
+	 */
 	private ArrayList<MyNodeInterface> sons = new ArrayList<MyNodeInterface>();
+	/**
+	 * Le hash du noeud, correspond au hash de l'ensemble de ses fils
+	 */
 	private String hash = "";
+	/**
+	 * Une Map de tous les types de fichiers contenus par le dossier courant
+	 */
 	public HashMap<String, String> containedTypes = new HashMap<String, String>();
+	/**
+	 * La dernière date de modif du dossier
+	 */
 	long lastModificationDate = 0;
+	/**
+	 * La liste des doublons
+	 */
 	static HashMap<String, ArrayList<ServiceNode>> doublons = new HashMap<String, ArrayList<ServiceNode>>();
 
+	/**
+	 * La stratégie de conversion
+	 */
 	private AbstractStrategyConvert strategyConversion = new StrategyConvertDirectory(this);
 
 	// BUILDERS

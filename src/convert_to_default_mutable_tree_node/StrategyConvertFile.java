@@ -4,6 +4,12 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import model.ServiceNode;
 
+/**
+ * Conversion pour les NodeFiles
+ * 
+ * @author valentin
+ *
+ */
 public class StrategyConvertFile extends AbstractStrategyConvert {
 	public StrategyConvertFile(ServiceNode n) {
 		node = n;

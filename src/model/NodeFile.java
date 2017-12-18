@@ -16,16 +16,35 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import convert_to_default_mutable_tree_node.AbstractStrategyConvert;
 import convert_to_default_mutable_tree_node.StrategyConvertFile;
 
+/**
+ * Noeud de l'arbre portant un fichier
+ * 
+ * @author valentin
+ *
+ */
 public class NodeFile implements MyNodeInterface {
 
 	private static final long serialVersionUID = -7609107586723401900L;
+	/**
+	 * L'objet chargé de guess le type des fichiers
+	 */
 	private static final TikaFileTypeDetector fileDetector = new TikaFileTypeDetector();
 
+	/**
+	 * le fichier porté par le noeud
+	 */
 	private File file;
-
+	/**
+	 * le hash du noeud (md5)
+	 */
 	private String hash = "";
+	/**
+	 * le type du fichier (png,pdf,ect)
+	 */
 	private String type = "";
-
+	/**
+	 * la stratégie de conversion
+	 */
 	private AbstractStrategyConvert strategyConversion = new StrategyConvertFile(this);
 
 	long lastModificationDate = 0;

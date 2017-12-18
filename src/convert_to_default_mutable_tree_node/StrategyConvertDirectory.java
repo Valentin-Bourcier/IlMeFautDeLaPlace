@@ -4,6 +4,12 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import model.ServiceNode;
 
+/**
+ * Conversion pour les NodeDirectory
+ * 
+ * @author valentin
+ *
+ */
 public class StrategyConvertDirectory extends AbstractStrategyConvert {
 
 	public StrategyConvertDirectory(ServiceNode n) {

@@ -9,6 +9,12 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import model.ServiceNode;
 
+/**
+ * Defini comment un Node maison est transformé en DefaultMutableTreeNode
+ * 
+ * @author valentin
+ *
+ */
 public abstract class AbstractStrategyConvert implements Serializable {
 	ServiceNode node;
 

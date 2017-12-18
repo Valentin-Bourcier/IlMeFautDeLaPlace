@@ -9,6 +9,15 @@ import java.util.ArrayList;
 
 import lightweight_cache_system.CacheNode;
 
+/**
+ * Interface perso, commune a NodeFile et NodeDirectory Elle me permet de
+ * definir des methodes internes qui sont nécessaires au traitement mais pas au
+ * réalisateur de la partie graphique
+ * 
+ * @author valentin
+ *
+ */
+
 public interface MyNodeInterface extends ServiceNode, Cloneable, Serializable {
 	/**
 	 * Calcul le hash des fichiers de l'arbre. Le point de départ est le noeud
