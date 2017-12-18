@@ -3,14 +3,16 @@
 ## Procédure de dev
 
 ### API
-Au début du projet nous nous sommes attachés à définir une interface commune proposant un ensemble de services : getters, gestions des doublons, gestion des filtres. Cette interface fut la base de ma reflexion pour développer mon projet. C'est l'interface' **ServiceNode** de mon projet.
+Au début du projet nous nous sommes attachés à définir une interface commune proposant un ensemble de services : getters, gestions des doublons, gestion des filtres. Cette interface fut la base de ma reflexion pour développer mon projet. C'est l'interface' [ServiceNode](../doc/model/ServiceNode.html) de mon projet.
+
+
 
 ![UML ServiceNode](./Image/ServiceNode.png)
 
 ### Architecture
 J'ai fait le choix d'utiliser ma propre structure pour représenter l'arborescence. Je trouvais cela plus amusant et plus gratifiant d'utiliser du code fait maison plutôt que de me reposer sur une librairie qui me macherait le travail.
 
-Je suis donc partir sur un patron composite comportant deux classes : **NodeDirectory** et **NodeFile** représentant respectivement un dossier/fichier de l'arborescence concernée. Afin de me simplifier la tâche ces deux classes implémentent une interface commune, **MyNodeInterface** elle même héritant de **ServiceNode**. Dans cette interface j'ai pu définir l'ensemble des opérations communes aux membres du composite.
+Je suis donc partir sur un patron composite comportant deux classes : **NodeDirectory** et **NodeFile** représentant respectivement un dossier/fichier de l'arborescence concernée. Afin de me simplifier la tâche ces deux classes implémentent une interface commune, **MyNodeInterface** elle même héritant de [ServiceNode](../doc/model/ServiceNode.html). Dans cette interface j'ai pu définir l'ensemble des opérations communes aux membres du composite.
 
 ![UML MyNodeInterface](./Image/MyNodeInterface.png)
 ## Implémentation

@@ -137,7 +137,7 @@ public class NodeDirectory implements MyNodeInterface {
 	 * Construit une arborescence de Noeud à partir du fichier/dossier passé en
 	 * paramètre
 	 * 
-	 * @param File
+	 * @param f
 	 *            fichier à partir duquel l'arbo est construite
 	 * 
 	 * @return {@link MyNodeInterface} la racine de l'arbo construite
@@ -175,8 +175,8 @@ public class NodeDirectory implements MyNodeInterface {
 	 * Construit une arborescence de Noeud à partir du fichier/dossier passé en
 	 * paramètre
 	 * 
-	 * @param File
-	 *            fichier à partir duquel l'arbo est construite
+	 * @param path
+	 *            path du fichier à partir duquel l'arbo est construite
 	 * 
 	 * @return {@link ServiceNode} la racine de l'arbo construite
 	 * 
@@ -448,7 +448,7 @@ public class NodeDirectory implements MyNodeInterface {
 	}
 
 	/**
-	 * @Return une hashmap de doublons
+	 * @return une hashmap de doublons
 	 */
 	public HashMap<String, ArrayList<ServiceNode>> getDoublons() {
 		HashMap<String, ArrayList<ServiceNode>> clean = new HashMap<>();
