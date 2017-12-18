@@ -2,7 +2,7 @@ package convert_to_default_mutable_tree_node;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import v2.ServiceNode;
+import model.ServiceNode;
 
 public class StrategyConvertDirectory extends AbstractStrategyConvert {
 

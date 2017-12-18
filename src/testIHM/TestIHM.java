@@ -8,9 +8,9 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
-import v2.MyNodeInterface;
-import v2.NodeDirectory;
-import v2.ServiceNode;
+import model.MyNodeInterface;
+import model.NodeDirectory;
+import model.ServiceNode;
 
 public class TestIHM {
 

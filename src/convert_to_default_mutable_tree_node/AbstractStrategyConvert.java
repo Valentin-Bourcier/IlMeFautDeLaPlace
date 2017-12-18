@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import v2.ServiceNode;
+import model.ServiceNode;
 
 public abstract class AbstractStrategyConvert implements Serializable {
 	ServiceNode node;

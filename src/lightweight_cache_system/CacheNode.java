@@ -9,8 +9,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import v2.MyNodeInterface;
-import v2.ServiceNode;
+import model.MyNodeInterface;
+import model.ServiceNode;
 
 /**
  * 
