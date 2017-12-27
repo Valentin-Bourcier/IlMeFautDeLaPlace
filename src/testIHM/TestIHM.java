@@ -16,7 +16,7 @@ public class TestIHM {
 
 	public static void main(String[] args) {
 		ServiceNode root = (MyNodeInterface) NodeDirectory.NodeFactory
-				.createINode(new File("/home/valentin/Documents/Cours/retroconception"));
+				.createINode(new File("/home/valentin/IMFDLP/"));
 		JFrame frame = new JFrame("File Browser");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
