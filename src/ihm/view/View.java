@@ -1,9 +1,13 @@
 package ihm.view;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.io.File;
+
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTree;
@@ -55,13 +59,20 @@ public class View extends Window {
 	public void render() {
 		
 		super.render();
-		
 		this.setPreferredSize(new Dimension(800, 600));
 		this.pack();
 	    
 	    this.setLocationRelativeTo(null);
 	    this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    this.setVisible(true);
+	    
+	    JDialog launch = new JDialog(this, "Path", true);
+	    new Launch("Path").render();
+//	    Container pane = new Launch("Path").getContentPane();
+//	    launch.setPreferredSize(new Dimension(600, 600));
+//	    launch.pack();
+//	    launch.setContentPane(pane);
+//	    launch.setVisible(true);
 	}
 	
 	public static void main(String[] args) {

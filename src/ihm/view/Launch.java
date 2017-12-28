@@ -15,9 +15,9 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.ListModel;
+import javax.swing.ListSelectionModel;
 
-import ihm.core.LaunchManager;
+import ihm.core.LaunchModel;
 
 public class Launch extends Window{
 
@@ -33,7 +33,7 @@ public class Launch extends Window{
 	private JPanel bottom;
 	private JButton delete;
 	private JButton launch;
-	private JList list;
+	private JList<String> list;
 	
 	public Launch(String aTitle) {
 		this.setTitle(aTitle);
@@ -50,7 +50,8 @@ public class Launch extends Window{
 		
 		// Center components
 		center = new JPanel();
-		list = new JList<>(LaunchManager.getManager());
+		list = new JList<>(LaunchModel.getModel());
+		list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		pathPanel = new JScrollPane(list);
 		
 		// Bottom components
@@ -107,8 +108,7 @@ public class Launch extends Window{
 			public void actionPerformed(ActionEvent e) {
 				
 				if(list.isSelectionEmpty() && !filePath.getText().equals("")) {
-					LaunchManager.getManager().addPath(filePath.getText());
-					
+					LaunchModel.getModel().add(filePath.getText());
 					list.repaint();
 				}else {
 					System.out.println(list.getSelectedValue().toString());
@@ -116,8 +116,14 @@ public class Launch extends Window{
 				
 			}
 		});
-		
-		
+		delete.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				LaunchModel.getModel().remove(list.getSelectedIndices());
+			}
+		});
 		
 	}
 	
@@ -130,13 +136,8 @@ public class Launch extends Window{
 	    
 	    this.setLocationRelativeTo(null);
 	    this.setResizable(false);
-	    this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    this.setVisible(true);
 	}
 	
-	public static void main(String[] args) {
-		Launch launch = new Launch("IMFDLP");
-		launch.render();
-	}
 	
 }
