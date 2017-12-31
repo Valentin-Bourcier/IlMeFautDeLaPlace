@@ -5,21 +5,27 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
 import ihm.core.LaunchModel;
+import ihm.core.Settings;
+import model.NodeDirectory;
 
-public class Launch extends Window{
+public class Launch extends JDialog implements View{
 
 	private static final long serialVersionUID = 1L;
 
@@ -34,9 +40,12 @@ public class Launch extends Window{
 	private JButton delete;
 	private JButton launch;
 	private JList<String> list;
+	protected static boolean customClose = true; 
 	
-	public Launch(String aTitle) {
-		this.setTitle(aTitle);
+	public Launch(JFrame aParentFrame, String aTitle, Boolean aModal) {
+		super(aParentFrame, aTitle, aModal);
+		render();
+		customClose = false;
 	}
 	
 	@Override
@@ -77,7 +86,7 @@ public class Launch extends Window{
 		
 		// Center Layout
 		center.setLayout(new BorderLayout());
-		center.add(new JLabel("Path history"), BorderLayout.NORTH);
+		center.add(new JLabel("Recent paths analyzed"), BorderLayout.NORTH);
 		center.add(pathPanel, BorderLayout.CENTER);
 		
 		// Bottom Layout
@@ -88,8 +97,10 @@ public class Launch extends Window{
 	
 	@Override
 	public void bind() {
+		
 		chooser = new JFileChooser(System.getProperty("user.home"));
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		
 		buttonFileChooser.addActionListener(new ActionListener() {
 			
 			@Override
@@ -102,20 +113,35 @@ public class Launch extends Window{
 			}
 		
 		});
+		
 		launch.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				if(list.isSelectionEmpty() && !filePath.getText().equals("")) {
+				if(list.isSelectionEmpty() && !filePath.getText().equals(""))
+				{
 					LaunchModel.getModel().add(filePath.getText());
-					list.repaint();
-				}else {
-					System.out.println(list.getSelectedValue().toString());
+					Settings.PATH = filePath.getText();
 				}
-				
+				else if(!list.isSelectionEmpty()) 
+				{
+					LaunchModel.getModel().add(list.getSelectedValue());
+					Settings.PATH = list.getSelectedValue();
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(null, "Please select a directory path with search button, or on history path list.", "Warning", JOptionPane.INFORMATION_MESSAGE);					
+				}
+				if(!list.isSelectionEmpty() || !filePath.getText().equals(""))
+				{	
+					Settings.SERVICE = NodeDirectory.NodeFactory.createINode(new File(Settings.PATH));
+					LaunchModel.getModel().serialize();
+					dispose();
+				}
 			}
 		});
+		
 		delete.addActionListener(new ActionListener() {
 			
 			@Override
@@ -125,19 +151,28 @@ public class Launch extends Window{
 			}
 		});
 		
+		
+		if(customClose) {
+			this.addWindowListener(new WindowAdapter() {
+
+			    @Override
+				public void windowClosing(WindowEvent e) {
+			    	System.out.println("Lancement annulé.");
+			    	System.exit(0);
+				}
+			});
+		}
+				
 	}
 	
 	@Override
 	public void render() {
-	    super.render();
+		build();
 		
-		this.setPreferredSize(new Dimension(400, 280));
-		this.pack();
-	    
+		this.setPreferredSize(new Dimension(300, 200));
+	    this.pack();
 	    this.setLocationRelativeTo(null);
-	    this.setResizable(false);
 	    this.setVisible(true);
 	}
-	
 	
 }

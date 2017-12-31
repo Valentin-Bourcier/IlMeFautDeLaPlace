@@ -295,16 +295,20 @@ public class NodeDirectory implements MyNodeInterface {
 		this.getSons().add(node);
 	}
 
+//	public String toString() {
+//		String s = filename().toUpperCase() + " ";
+//		for (ServiceNode currentNode : child()) {
+//			s += currentNode.toString() + " ";
+//		}
+//
+//		return s;
+//
+//	}
+
 	public String toString() {
-		String s = filename().toUpperCase() + " ";
-		for (ServiceNode currentNode : child()) {
-			s += currentNode.toString() + " ";
-		}
-
-		return s;
-
+		return filename();
 	}
-
+	
 	// MyNodeInterface
 	@Override
 	/**

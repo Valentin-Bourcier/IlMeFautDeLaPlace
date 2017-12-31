@@ -69,7 +69,7 @@ public class NodeFile implements MyNodeInterface {
 		lastModificationDate = date;
 	}
 
-	private File getFile() {
+	public File getFile() {
 		return file;
 	}
 
