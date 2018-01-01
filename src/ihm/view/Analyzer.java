@@ -69,7 +69,7 @@ public class Analyzer extends JFrame implements View{
 			public void valueChanged(TreeSelectionEvent e) {
 				DefaultMutableTreeNode node = (DefaultMutableTreeNode) Analyzer.tree.getLastSelectedPathComponent();
 				Settings.SERVICE = (ServiceNode) node.getUserObject();
-				System.out.println("Selection changed" + Settings.SERVICE.filename());
+				System.out.println("Selection changed: " + Settings.SERVICE.filename());
 			}
 		});
 		

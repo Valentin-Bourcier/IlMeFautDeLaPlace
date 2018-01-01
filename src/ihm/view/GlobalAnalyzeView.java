@@ -12,6 +12,8 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import ihm.core.Settings;
 import model.ServiceNode;
@@ -22,7 +24,9 @@ public class GlobalAnalyzeView extends JSplitPane implements View{
 	private JPanel center;
 	private JButton search;
 	private JScrollPane scroll;
-	private JList<ArrayList<ServiceNode>> files;
+	private JList<ArrayList<ServiceNode>> duplicates;
+	private JPanel bottom;
+	private JList<ServiceNode> bottomList;
 	
 	private DefaultListModel<ArrayList<ServiceNode>> model;
 	
@@ -38,10 +42,11 @@ public class GlobalAnalyzeView extends JSplitPane implements View{
 		search = new JButton("Search duplicates");
 		model = new DefaultListModel<>();
 		
-		files = new JList<>(model);
-		files.setCellRenderer(new FileRenderer());
+		duplicates = new JList<>(model);
+		duplicates.setCellRenderer(new FileRenderer());
 		
-		scroll = new JScrollPane(files);
+		scroll = new JScrollPane(duplicates);
+		bottom = new JPanel();
 	}
 
 	@Override
@@ -54,10 +59,15 @@ public class GlobalAnalyzeView extends JSplitPane implements View{
 		center.add(scroll, BorderLayout.CENTER);
 		center.add(search, BorderLayout.SOUTH);
 		
+		this.add(bottom, JSplitPane.BOTTOM);
+		this.setDividerSize(0);
+		bottom.setVisible(false);
+		
 	}
 	
 	@Override
 	public void bind() {
+		
 		search.addActionListener(new ActionListener() {
 			
 			@Override
@@ -66,6 +76,19 @@ public class GlobalAnalyzeView extends JSplitPane implements View{
 				for (ArrayList<ServiceNode> vDuplicate: vDuplicatesFiles.values()) {
 					model.addElement(vDuplicate);
 				}
+			}
+		});
+		
+		duplicates.addListSelectionListener(new ListSelectionListener() {
+			
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				ArrayList<ServiceNode> vSelection = duplicates.getSelectedValue();
+				for (ServiceNode vServiceNode : vSelection) {
+					
+				}
+				setDividerSize(10);
+				bottom.setVisible(true);
 			}
 		});
 	}	
