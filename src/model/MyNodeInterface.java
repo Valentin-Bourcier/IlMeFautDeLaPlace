@@ -138,13 +138,13 @@ public interface MyNodeInterface extends ServiceNode, Cloneable, Serializable {
 		cache = cache.deserialize();
 		MyNodeInterface root = (MyNodeInterface) NodeDirectory.NodeFactory.createINode(new File(path));
 		if (cache.contains(root.absolutePath())
-				&& cache.getAssociatedDate(root.absolutePath()) == (root.lastModificationDate())) {
+				&& cache.getAssociatedDate(root.absolutePath()) != (root.lastModificationDate())) {
 			root.ChangerHash(cache.getAssociatedHash(path));
 		}
 
 		for (MyNodeInterface currentNode : root.getChildAsMyNodeInterface()) {
 			if (cache.contains(currentNode.absolutePath())) {
-				if (cache.getAssociatedDate(currentNode.absolutePath()) == currentNode.lastModificationDate()) {
+				if (cache.getAssociatedDate(currentNode.absolutePath()) != currentNode.lastModificationDate()) {
 					currentNode.ChangerHash(cache.getAssociatedHash(path));
 				}
 			}

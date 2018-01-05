@@ -54,7 +54,7 @@ public class NodeDirectory implements MyNodeInterface {
 	/**
 	 * La liste des doublons
 	 */
-	static HashMap<String, ArrayList<ServiceNode>> doublons = new HashMap<String, ArrayList<ServiceNode>>();
+	public static HashMap<String, ArrayList<ServiceNode>> doublons = new HashMap<String, ArrayList<ServiceNode>>();
 
 	/**
 	 * La stratégie de conversion
@@ -62,7 +62,7 @@ public class NodeDirectory implements MyNodeInterface {
 	private AbstractStrategyConvert strategyConversion = new StrategyConvertDirectory(this);
 
 	// BUILDERS
-	NodeDirectory() {
+	public NodeDirectory() {
 		directory = null;
 	}
 
@@ -92,7 +92,7 @@ public class NodeDirectory implements MyNodeInterface {
 		return sons;
 	}
 
-	private void setSons(ArrayList<MyNodeInterface> sons) {
+	public void setSons(ArrayList<MyNodeInterface> sons) {
 		this.sons = sons;
 	}
 

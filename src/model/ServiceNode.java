@@ -120,4 +120,39 @@ public interface ServiceNode {
 	}
 
 	String cliPrint(int shift);
+	
+	default public void remove(ServiceNode aNode) {
+		ServiceNode vNode = findFather(aNode);
+		if (vNode != null) {
+			NodeDirectory vParent = (NodeDirectory) vNode;
+			ArrayList<MyNodeInterface> vChilds = vParent.getChildAsMyNodeInterface();
+			vChilds.remove(aNode);
+			vParent.setSons(vChilds);
+		}
+	}
+	
+	default public ServiceNode findFather(ServiceNode target) {	 
+        ServiceNode result = null;
+        final String targetAbsolutePath = target.absolutePath();
+        if (targetAbsolutePath.contains(this.absolutePath())) {
+            result = this;// C'est potentiellement le daron
+            // On continue de creuser pour trouver le plus proche parent
+            for (ServiceNode currentNode : this.child()) {
+                if (currentNode.isDirectory()) {
+                    ServiceNode tmp = currentNode.findFather(target);
+                    if (tmp != null) {
+                        result = tmp;
+                        break;
+                    }
+ 
+                }
+            }
+        }
+        else {
+            // on stoppe c'est pas le bon chemin
+            return null;
+        }
+        return result;
+ 
+    }
 }

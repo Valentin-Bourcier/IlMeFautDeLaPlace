@@ -24,6 +24,7 @@ import javax.swing.ListSelectionModel;
 import ihm.core.LaunchModel;
 import ihm.core.Settings;
 import model.NodeDirectory;
+import model.ServiceNode;
 
 public class Launch extends JDialog implements View{
 
@@ -123,11 +124,15 @@ public class Launch extends JDialog implements View{
 				{
 					LaunchModel.getModel().add(filePath.getText());
 					Settings.PATH = filePath.getText();
+					Settings.SERVICE = NodeDirectory.NodeFactory.createINode(new File(Settings.PATH));
+					Settings.SERVICE.saveTreeIntoCacheFile();
 				}
 				else if(!list.isSelectionEmpty()) 
 				{
 					LaunchModel.getModel().add(list.getSelectedValue());
 					Settings.PATH = list.getSelectedValue();
+					ServiceNode node = new NodeDirectory();
+					Settings.SERVICE = node.LoadTreeFromCacheFile(Settings.PATH);
 				}
 				else
 				{
@@ -135,7 +140,6 @@ public class Launch extends JDialog implements View{
 				}
 				if(!list.isSelectionEmpty() || !filePath.getText().equals(""))
 				{	
-					Settings.SERVICE = NodeDirectory.NodeFactory.createINode(new File(Settings.PATH));
 					LaunchModel.getModel().serialize();
 					dispose();
 				}
