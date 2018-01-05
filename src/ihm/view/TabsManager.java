@@ -12,8 +12,9 @@ public class TabsManager implements View {
 	private JTabbedPane tabs;
 
 	public static int HOME = 0;
-	public static int DUPLICATES = -1;
-	public static int INFORMATIONS = -2;
+	public static int SCAN = -1;
+	public static int DUPLICATES = -2;
+	public static int INFORMATIONS = -3;
 
 	private TabsManager() {
 		render();
@@ -32,7 +33,9 @@ public class TabsManager implements View {
 		tabs = new JTabbedPane();
 		tabs.setUI(new TabbedPaneUI());
 		open(HOME);
+		open(SCAN);
 		open(DUPLICATES);
+		open(INFORMATIONS);
 	}
 
 	@Override
@@ -57,6 +60,11 @@ public class TabsManager implements View {
 		if (aId == HOME && !isOpen(HOME))
 		{
 			tabs.addTab("Home" + TabbedPaneUI.CLOSE_WIDTH, new JPanel());
+		}
+		if (aId == SCAN && !isOpen(SCAN))
+		{
+			tabs.addTab("Scan" + TabbedPaneUI.CLOSE_WIDTH, new ScanView());
+			SCAN = tabs.getTabCount() - 1;
 		}
 		if (aId == DUPLICATES && !isOpen(DUPLICATES))
 		{

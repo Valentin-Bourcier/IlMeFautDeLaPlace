@@ -106,11 +106,12 @@ public class NodeDirectory implements MyNodeInterface {
 		this.hash = hash;
 	}
 
+	@Override
 	public void ChangerHash(String cachedHash) {
 		this.setHash(cachedHash);
 	}
 
-	protected HashMap<String, String> getContainedTypes() {
+	public HashMap<String, String> getContainedTypes() {
 		return containedTypes;
 	}
 
@@ -143,27 +144,35 @@ public class NodeDirectory implements MyNodeInterface {
 	 * @return {@link MyNodeInterface} la racine de l'arbo construite
 	 * 
 	 */
+	@Override
 	public MyNodeInterface createINode(File f) {
-		try {
-			if (f.isDirectory()) {
+		try
+		{
+			if (f.isDirectory())
+			{
 
 				NodeDirectory result = new NodeDirectory(f);
 				result.setLastModificationDate(f.lastModified());
 
-				for (File currentFile : f.listFiles()) {
+				for (File currentFile : f.listFiles())
+				{
 					MyNodeInterface tmpNode = NodeFactory.createINode(currentFile);
 					if (tmpNode != null)
 						result.sons.add(tmpNode);
 				}
 
 				return result;
-			} else {// ie f est un fichier
+			}
+			else
+			{// ie f est un fichier
 				NodeFile result = new NodeFile(f);
 				result.setLastModificationDate(f.lastModified());
 
 				return result;
 			}
-		} catch (Exception e) {//Dossier verouille ect...
+		}
+		catch (Exception e)
+		{// Dossier verouille ect...
 			System.out.println(e);
 			return null;
 		}
@@ -185,10 +194,11 @@ public class NodeDirectory implements MyNodeInterface {
 	public ServiceNode tree(String path) {
 		File f = new File(path);
 		MyNodeInterface tree = NodeFactory.createINode(f);
-		for (File currentFile : f.listFiles()) {
+		for (File currentFile : f.listFiles())
+		{
 			sons.add(NodeFactory.createINode(currentFile));
 		}
-		//tree.computHash();
+		// tree.computHash();
 		return tree;
 	}
 
@@ -231,7 +241,8 @@ public class NodeDirectory implements MyNodeInterface {
 	@Override
 	public ArrayList<ServiceNode> child() {
 		ArrayList<ServiceNode> sons = new ArrayList<ServiceNode>();
-		for (ServiceNode currentNode : getSons()) {
+		for (ServiceNode currentNode : getSons())
+		{
 			sons.add(currentNode);
 		}
 		return sons;
@@ -260,17 +271,21 @@ public class NodeDirectory implements MyNodeInterface {
 
 		// On liste les fils éligibles
 		ArrayList<MyNodeInterface> eligibleSons = new ArrayList<MyNodeInterface>();
-		for (MyNodeInterface currentNode : getSons()) {
+		for (MyNodeInterface currentNode : getSons())
+		{
 			System.out.println("Filtre, fils testé : " + currentNode.filename());
-			if (currentNode.containsOneOfThose(filtres) == Boolean.TRUE) {
+			if (currentNode.containsOneOfThose(filtres) == Boolean.TRUE)
+			{
 				eligibleSons.add(currentNode.clone());
 			}
 		}
-		//on remplace alors la liste de fils, par la liste ne contenant que les fils éligibles
+		// on remplace alors la liste de fils, par la liste ne contenant que les fils
+		// éligibles
 		this.setSons(eligibleSons);
 
 		// On filtre les fils éligibles
-		for (MyNodeInterface currentNode : getSons()) {
+		for (MyNodeInterface currentNode : getSons())
+		{
 			currentNode.effectiveFilter(filtres);
 		}
 
@@ -283,7 +298,8 @@ public class NodeDirectory implements MyNodeInterface {
 
 	@Override
 	public boolean containsOneOfThose(String[] filtres) {
-		for (String currentFiltre : filtres) {
+		for (String currentFiltre : filtres)
+		{
 			if (isThatKind(currentFiltre))
 				return Boolean.TRUE;
 		}
@@ -295,20 +311,21 @@ public class NodeDirectory implements MyNodeInterface {
 		this.getSons().add(node);
 	}
 
-//	public String toString() {
-//		String s = filename().toUpperCase() + " ";
-//		for (ServiceNode currentNode : child()) {
-//			s += currentNode.toString() + " ";
-//		}
-//
-//		return s;
-//
-//	}
+	// public String toString() {
+	// String s = filename().toUpperCase() + " ";
+	// for (ServiceNode currentNode : child()) {
+	// s += currentNode.toString() + " ";
+	// }
+	//
+	// return s;
+	//
+	// }
 
+	@Override
 	public String toString() {
 		return filename();
 	}
-	
+
 	// MyNodeInterface
 	@Override
 	/**
@@ -318,15 +335,18 @@ public class NodeDirectory implements MyNodeInterface {
 	 * @see v2.MyNodeInterface#computHash()
 	 */
 	public void computHash() {
-		//System.out.println("Hash en cours : " + filename());
+		// System.out.println("Hash en cours : " + filename());
 		StringBuffer stringToHashBuffer = new StringBuffer("");
-		for (MyNodeInterface CurrentNode : getSons()) {
+		for (MyNodeInterface CurrentNode : getSons())
+		{
 			// Si fils deja hash on le recup
-			if (!(CurrentNode.hash().isEmpty())) {
+			if (!(CurrentNode.hash().isEmpty()))
+			{
 				stringToHashBuffer.append(CurrentNode.hash());
 			}
 			// Sinon on le calcule puis on le recup
-			else {
+			else
+			{
 				CurrentNode.computHash();
 				stringToHashBuffer.append(CurrentNode.hash());
 			}
@@ -335,18 +355,24 @@ public class NodeDirectory implements MyNodeInterface {
 		String stringToHash = stringToHashBuffer.toString();
 		byte[] bytesOfMessage;
 		byte[] thedigest = null;
-		try {
+		try
+		{
 			bytesOfMessage = stringToHash.getBytes("UTF-8");
 			MessageDigest md = MessageDigest.getInstance("MD5");
 			thedigest = md.digest(bytesOfMessage);
-		} catch (UnsupportedEncodingException e) {
-
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
+		}
+		catch (UnsupportedEncodingException e)
+		{
 
 			e.printStackTrace();
 		}
-		if (thedigest != null) {
+		catch (NoSuchAlgorithmException e)
+		{
+
+			e.printStackTrace();
+		}
+		if (thedigest != null)
+		{
 			this.setHash(new String(thedigest, StandardCharsets.UTF_8));
 
 		}
@@ -354,16 +380,19 @@ public class NodeDirectory implements MyNodeInterface {
 	}
 
 	// retourne la liste de tous les types de fichier contenus dans le dossier
+	@Override
 	public String computeFileType() {
 		String listeTypes = "";
 		String guessedType = "";
-		for (MyNodeInterface currentNode : sons) {
+		for (MyNodeInterface currentNode : sons)
+		{
 			guessedType = currentNode.computeFileType();
-			if (guessedType != null)//Si la detection de type �choue, elle renvoie null
+			if (guessedType != null)// Si la detection de type �choue, elle renvoie null
 				listeTypes += guessedType + " ";
 		}
 		String[] tabTypes = listeTypes.trim().split(" ");
-		for (String currentTypes : tabTypes) {
+		for (String currentTypes : tabTypes)
+		{
 			containedTypes.put(currentTypes.trim(), currentTypes.trim());
 		}
 
@@ -372,6 +401,7 @@ public class NodeDirectory implements MyNodeInterface {
 
 	// Sera utilisé pour connaitre tous les types de fichier contenus dans le
 	// dossier
+	@Override
 	public String[] containedTypes() {
 		String[] type = new String[1];
 		if (containedTypes.size() == 0)
@@ -382,23 +412,28 @@ public class NodeDirectory implements MyNodeInterface {
 	@Override
 	public NodeDirectory clone() {
 		NodeDirectory result = null;
-		try {
+		try
+		{
 			result = (NodeDirectory) super.clone();
-		} catch (CloneNotSupportedException e) {
+		}
+		catch (CloneNotSupportedException e)
+		{
 			e.printStackTrace();
 		}
 
 		result.setDirectory(new File(this.getDirectory().getPath()));
 
 		result.setSons(new ArrayList<MyNodeInterface>());
-		for (MyNodeInterface currentNode : this.getSons()) {
+		for (MyNodeInterface currentNode : this.getSons())
+		{
 			result.addSon(currentNode.clone());
 		}
 
 		result.setHash(new String(this.getHash()));
 
 		result.setContainedTypes(new HashMap<String, String>());
-		for (Map.Entry<String, String> currentEntry : this.getContainedTypes().entrySet()) {
+		for (Map.Entry<String, String> currentEntry : this.getContainedTypes().entrySet())
+		{
 			String key = new String(currentEntry.getKey());
 			String value = new String(currentEntry.getValue());
 			result.containedTypes.put(key, value);
@@ -406,18 +441,24 @@ public class NodeDirectory implements MyNodeInterface {
 		return result;
 	}
 
+	@Override
 	public NodeDirectory deserialize() {
 		NodeDirectory nd = null;
-		try {
+		try
+		{
 			FileInputStream fileIn = new FileInputStream("tmp.ser");
 			ObjectInputStream in = new ObjectInputStream(fileIn);
 			nd = (NodeDirectory) in.readObject();
 			in.close();
 			fileIn.close();
-		} catch (IOException i) {
+		}
+		catch (IOException i)
+		{
 			i.printStackTrace();
 			return null;
-		} catch (ClassNotFoundException c) {
+		}
+		catch (ClassNotFoundException c)
+		{
 			System.out.println("Node directory class not found");
 			c.printStackTrace();
 			return null;
@@ -428,7 +469,8 @@ public class NodeDirectory implements MyNodeInterface {
 	@Override
 	public int getNbNode() {
 		int somme = 1;
-		for (MyNodeInterface currentNode : getSons()) {
+		for (MyNodeInterface currentNode : getSons())
+		{
 			somme = somme + currentNode.getNbNode();
 		}
 		return somme;
@@ -437,16 +479,19 @@ public class NodeDirectory implements MyNodeInterface {
 	/**
 	 * Remplie la HashMap Doublons
 	 */
+	@Override
 	public void computeDoublons() {
 		if (doublons.containsKey(getHash()))
 			doublons.get(getHash()).add(this);
-		else {
+		else
+		{
 			ArrayList<ServiceNode> tmp = new ArrayList<ServiceNode>();
 			tmp.add(this);
 			doublons.put(getHash(), tmp);
 
 		}
-		for (MyNodeInterface currentNode : getChildAsMyNodeInterface()) {
+		for (MyNodeInterface currentNode : getChildAsMyNodeInterface())
+		{
 			currentNode.computeDoublons();
 		}
 	}
@@ -454,13 +499,17 @@ public class NodeDirectory implements MyNodeInterface {
 	/**
 	 * @return une hashmap de doublons
 	 */
+	@Override
 	public HashMap<String, ArrayList<ServiceNode>> getDoublons() {
 		HashMap<String, ArrayList<ServiceNode>> clean = new HashMap<>();
-		if (doublons.isEmpty()) {
+		if (doublons.isEmpty())
+		{
 			this.computeDoublons();
 		}
-		for (Map.Entry<String, ArrayList<ServiceNode>> entry : doublons.entrySet()) {
-			if (entry.getValue().size() > 1) {
+		for (Map.Entry<String, ArrayList<ServiceNode>> entry : doublons.entrySet())
+		{
+			if (entry.getValue().size() > 1)
+			{
 				clean.put(entry.getKey(), entry.getValue());
 			}
 		}
@@ -471,11 +520,13 @@ public class NodeDirectory implements MyNodeInterface {
 	@Override
 	public String cliPrint(int shift) {
 		String resul = "";
-		for (int i = 0; i < shift; i++) {
+		for (int i = 0; i < shift; i++)
+		{
 			resul += "-";
 		}
 		resul += this.filename().toUpperCase() + "\n";
-		for (MyNodeInterface son : this.getSons()) {
+		for (MyNodeInterface son : this.getSons())
+		{
 			resul = resul + son.cliPrint(shift + 1);
 		}
 		return resul;
