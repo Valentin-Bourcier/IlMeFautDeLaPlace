@@ -74,7 +74,9 @@ public class FileInformationsView extends JPanel implements View {
 		this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		pane.setLayout(new GridLayout(6, 2));
 		pane.setPreferredSize(new Dimension(500, 500));
+		pane.setMinimumSize(new Dimension(300, 300));
 		pane.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.GRAY));
+
 	}
 
 }

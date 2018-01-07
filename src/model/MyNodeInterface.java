@@ -32,13 +32,13 @@ public interface MyNodeInterface extends ServiceNode, Cloneable, Serializable {
 	 */
 	public MyNodeInterface createINode(File f);
 
-	//Getters
+	// Getters
 	public ArrayList<MyNodeInterface> getChildAsMyNodeInterface();
 
-	//Setters (nécessaire pour reprendre le cache)
+	// Setters (nécessaire pour reprendre le cache)
 	public void ChangerHash(String cachedHash);
 
-	//DebutFiltres
+	// DebutFiltres
 	/**
 	 * Calcule tous les types de fichiers portés par le noeud courant
 	 * 
@@ -91,7 +91,7 @@ public interface MyNodeInterface extends ServiceNode, Cloneable, Serializable {
 	 */
 	public boolean isThatKind(String kind);
 
-	//FinFiltres
+	// FinFiltres
 	/**
 	 * 
 	 * @param node
@@ -103,16 +103,21 @@ public interface MyNodeInterface extends ServiceNode, Cloneable, Serializable {
 	 * Serialise dans le fichier tmp.ser l'état de l'arbre
 	 */
 	default public void serialize() {
-		try {
+		try
+		{
 			FileOutputStream fos = new FileOutputStream("tmp.ser");
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(this);
 			oos.close();
 			fos.close();
-		} catch (IOException i) {
+		}
+		catch (IOException i)
+		{
 			i.printStackTrace();
 
-		} finally {
+		}
+		finally
+		{
 
 		}
 	}
@@ -122,7 +127,7 @@ public interface MyNodeInterface extends ServiceNode, Cloneable, Serializable {
 	 */
 	@Override
 	default public void saveTreeIntoCacheFile() {
-		//this.serialize();
+		// this.serialize();
 		CacheNode cache = new CacheNode(this);
 		cache.serialize();
 	}
@@ -136,30 +141,35 @@ public interface MyNodeInterface extends ServiceNode, Cloneable, Serializable {
 	default public ServiceNode LoadTreeFromCacheFile(String path) {
 		CacheNode cache = new CacheNode();
 		cache = cache.deserialize();
-		MyNodeInterface root = (MyNodeInterface) NodeDirectory.NodeFactory.createINode(new File(path));
+		MyNodeInterface root = NodeDirectory.NodeFactory.createINode(new File(path));
 		if (cache.contains(root.absolutePath())
-				&& cache.getAssociatedDate(root.absolutePath()) != (root.lastModificationDate())) {
+		        && cache.getAssociatedDate(root.absolutePath()) != (root.lastModificationDate()))
+		{
 			root.ChangerHash(cache.getAssociatedHash(path));
 		}
 
-		for (MyNodeInterface currentNode : root.getChildAsMyNodeInterface()) {
-			if (cache.contains(currentNode.absolutePath())) {
-				if (cache.getAssociatedDate(currentNode.absolutePath()) != currentNode.lastModificationDate()) {
+		for (MyNodeInterface currentNode : root.getChildAsMyNodeInterface())
+		{
+			if (cache.contains(currentNode.absolutePath()))
+			{
+				if (cache.getAssociatedDate(currentNode.absolutePath()) != currentNode.lastModificationDate())
+				{
 					currentNode.ChangerHash(cache.getAssociatedHash(path));
 				}
 			}
 		}
 
 		return root;
-		//return this.deserialize();
+		// return this.deserialize();
 	}
 
 	public MyNodeInterface deserialize();
 
-	//DOUBLONS
+	// DOUBLONS
 	/**
 	 * Parcours l'arborescence à partir du noeud courant afin d'identifier les
 	 * doublons.
 	 */
+	@Override
 	public void computeDoublons();
 }

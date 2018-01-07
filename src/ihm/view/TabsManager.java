@@ -50,6 +50,7 @@ public class TabsManager implements View {
 
 			@Override
 			public void stateChanged(ChangeEvent e) {
+				((View) tabs.getSelectedComponent()).refresh();
 			}
 		});
 

@@ -176,21 +176,28 @@ public class Analyzer extends JFrame implements View {
 			public void actionPerformed(ActionEvent e) {
 				ComboBoxModel<CheckableItem> vModel = extensions.getModel();
 				ArrayList<String> sl = new ArrayList<>();
+				String[] vTypes = Settings.SERVICE.types();
 				for (int i = 0; i < vModel.getSize(); i++)
 				{
 					Object o = vModel.getElementAt(i);
 					if (o instanceof CheckableItem && ((CheckableItem) o).selected)
 					{
-						sl.add(o.toString());
+						for (String vType : vTypes)
+						{
+							if (vType.contains(o.toString()))
+							{
+								sl.add(vType);
+							}
+						}
 					}
 				}
 
 				Settings.SERVICE = Settings.SERVICE.filter(Arrays.copyOf(sl.toArray(), sl.size(), String[].class));
 				TreeModel treeModel = new FileTreeModel(
-				        Settings.SERVICE.getTreeAsDefaultMutableTreeNode(null).getRoot());
+				        Settings.SERVICE.filter(Arrays.copyOf(sl.toArray(), sl.size(), String[].class))
+				                .getTreeAsDefaultMutableTreeNode(null).getRoot());
 
-				tree = new JTree(treeModel);
-				System.out.println(Settings.SERVICE);
+				tree.setModel(treeModel);
 				tree.revalidate();
 				tree.repaint();
 			}

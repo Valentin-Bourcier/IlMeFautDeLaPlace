@@ -1,9 +1,9 @@
 package ihm.view;
 
 public interface View {
-	abstract void initComponents();
+	void initComponents();
 
-	abstract void setLayout();
+	void setLayout();
 
 	default void bind() {
 	}

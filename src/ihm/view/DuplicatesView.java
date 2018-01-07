@@ -14,7 +14,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import ihm.core.Settings;
-import model.NodeDirectory;
 import model.ServiceNode;
 
 public class DuplicatesView extends JPanel implements View {
@@ -62,12 +61,15 @@ public class DuplicatesView extends JPanel implements View {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				NodeDirectory.doublons = new HashMap<String, ArrayList<ServiceNode>>();
 				duplicates.removeAll();
-				Settings.SERVICE.computeDoublons();
 				HashMap<String, ArrayList<ServiceNode>> vDuplicatesFiles = Settings.SERVICE.getDoublons();
 				for (ArrayList<ServiceNode> vDuplicate : vDuplicatesFiles.values())
 				{
+					System.out.println("Récupération liste: ");
+					for (ServiceNode serviceNode : vDuplicate)
+					{
+						System.out.println(serviceNode.getClass());
+					}
 					duplicates.add(new DuplicatesRenderer(vDuplicate));
 				}
 				duplicates.revalidate();

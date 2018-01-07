@@ -88,7 +88,7 @@ public class NodeDirectory implements MyNodeInterface {
 		this.directory = directory;
 	}
 
-	private ArrayList<MyNodeInterface> getSons() {
+	public ArrayList<MyNodeInterface> getSons() {
 		return sons;
 	}
 
@@ -111,7 +111,7 @@ public class NodeDirectory implements MyNodeInterface {
 		this.setHash(cachedHash);
 	}
 
-	public HashMap<String, String> getContainedTypes() {
+	protected HashMap<String, String> getContainedTypes() {
 		return containedTypes;
 	}
 
@@ -311,16 +311,17 @@ public class NodeDirectory implements MyNodeInterface {
 		this.getSons().add(node);
 	}
 
+	// @Override
 	// public String toString() {
 	// String s = filename().toUpperCase() + " ";
-	// for (ServiceNode currentNode : child()) {
+	// for (ServiceNode currentNode : child())
+	// {
 	// s += currentNode.toString() + " ";
 	// }
 	//
 	// return s;
 	//
 	// }
-
 	@Override
 	public String toString() {
 		return filename();
@@ -424,6 +425,7 @@ public class NodeDirectory implements MyNodeInterface {
 		result.setDirectory(new File(this.getDirectory().getPath()));
 
 		result.setSons(new ArrayList<MyNodeInterface>());
+		result.strategyConversion = new StrategyConvertDirectory(result);
 		for (MyNodeInterface currentNode : this.getSons())
 		{
 			result.addSon(currentNode.clone());
