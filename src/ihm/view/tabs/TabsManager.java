@@ -7,6 +7,7 @@ import javax.swing.event.ChangeListener;
 import ihm.view.duplicates.DuplicatesView;
 import ihm.view.main.View;
 import ihm.view.scan.FileInformationsView;
+import ihm.view.scan.ScanView;
 
 public class TabsManager implements View {
 
@@ -35,7 +36,6 @@ public class TabsManager implements View {
 		tabs = new JTabbedPane();
 		tabs.setUI(new TabbedPaneUI());
 		open(SCAN);
-		open(DUPLICATES);
 	}
 
 	@Override
@@ -55,19 +55,19 @@ public class TabsManager implements View {
 		if (aId == SCAN && !isOpen(SCAN))
 		{
 			tabs.addTab("Scan" + TabbedPaneUI.CLOSE_WIDTH, new ScanView());
-			SCAN = tabs.getTabCount();
+			SCAN = tabs.getTabCount() - 1;
 			setActive(tabs.getTabCount() - 1);
 		}
 		else if (aId == DUPLICATES && !isOpen(DUPLICATES))
 		{
 			tabs.addTab("Duplicates scan" + TabbedPaneUI.CLOSE_WIDTH, new DuplicatesView());
-			DUPLICATES = tabs.getTabCount();
+			DUPLICATES = tabs.getTabCount() - 1;
 			setActive(tabs.getTabCount() - 1);
 		}
 		else if (aId == INFORMATIONS && !isOpen(INFORMATIONS))
 		{
 			tabs.addTab("Informations" + TabbedPaneUI.CLOSE_WIDTH, new FileInformationsView());
-			INFORMATIONS = tabs.getTabCount();
+			INFORMATIONS = tabs.getTabCount() - 1;
 			setActive(tabs.getTabCount() - 1);
 		}
 		else
@@ -78,11 +78,15 @@ public class TabsManager implements View {
 	}
 
 	public boolean isOpen(int aId) {
-		return aId >= 0 && aId <= tabs.getTabCount();
+		return aId >= 0;
 	}
 
 	public void close() {
-		int aId = TabsManager.getManager().getPane().getSelectedIndex();
+		int aId = 0;
+		if (TabsManager.getManager().getPane().getTabCount() > 1)
+		{
+			aId = TabsManager.getManager().getPane().getSelectedIndex() + 1;
+		}
 		if (aId == SCAN)
 		{
 			SCAN = -1;

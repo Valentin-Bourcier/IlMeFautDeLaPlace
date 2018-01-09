@@ -2,19 +2,19 @@ package ihm.view.scan;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.util.ArrayList;
+import java.util.Enumeration;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.tree.DefaultMutableTreeNode;
 
-import ihm.model.Settings;
+import ihm.model.FileTreeModel;
+import ihm.view.FileTreeView;
 import ihm.view.main.View;
-import model.MyNodeInterface;
-import model.NodeDirectory;
 import model.ServiceNode;
 
-class ScanView extends JPanel implements View {
+public class ScanView extends JPanel implements View {
 
 	private static final long serialVersionUID = 1L;
 
@@ -45,18 +45,34 @@ class ScanView extends JPanel implements View {
 
 	@Override
 	public void load() {
-		ServiceNode vSelection = Settings.service;
+		DefaultMutableTreeNode vDMTnode = (DefaultMutableTreeNode) FileTreeView.getView()
+		        .getLastSelectedPathComponent();
+		FileTreeModel vModel = (FileTreeModel) FileTreeView.getView().getModel();
+		if (vDMTnode == null)
+		{
+			vDMTnode = FileTreeView.getView().getRoot();
+		}
+		ServiceNode vSelection = (ServiceNode) vDMTnode.getUserObject();
 		if (!vSelection.isDirectory())
 		{
-			vSelection = Settings.root.findFather(vSelection);
+			vDMTnode = vModel.findFather(vSelection);
 		}
-		ArrayList<MyNodeInterface> vChilds = ((NodeDirectory) vSelection).getSons();
-		long vWeight = vSelection.weight();
-		for (ServiceNode vChild : vChilds)
-		{
+		long vWeight = ((ServiceNode) vDMTnode.getUserObject()).weight();
 
-			graph.add(new FileGraphView(vWeight, getSize(), vChild));
+		Enumeration<?> vEnumeration = vDMTnode.children();
+		while (vEnumeration.hasMoreElements())
+		{
+			DefaultMutableTreeNode vChild = (DefaultMutableTreeNode) vEnumeration.nextElement();
+			if (vChild != null)
+			{
+				ServiceNode vNode = (ServiceNode) vChild.getUserObject();
+				graph.add(new FileGraphView(vWeight, getSize(), vNode));
+			}
+
 		}
+
+		file.setSelection(vSelection);
+		file.render();
 
 	}
 

@@ -21,6 +21,7 @@ import ihm.model.FilterModel;
 import ihm.model.Settings;
 import ihm.view.FileTreeView;
 import ihm.view.main.View;
+import ihm.view.tabs.TabsManager;
 import model.ServiceNode;
 
 public class FilterView extends JPanel implements View {
@@ -29,6 +30,7 @@ public class FilterView extends JPanel implements View {
 
 	private JComboBox<CheckableItem> extensions;
 	private JButton filter;
+	private JButton reset;
 
 	public FilterView() {
 		render();
@@ -38,14 +40,16 @@ public class FilterView extends JPanel implements View {
 	public void initComponents() {
 		extensions = new CheckedComboBox<>();
 		filter = new JButton("Filter");
+		reset = new JButton("Reset");
 	}
 
 	@Override
 	public void setLayout() {
-		setLayout(new GridLayout(3, 1));
+		setLayout(new GridLayout(4, 1));
 		add(new JLabel("Select extensions: "));
 		add(extensions);
 		add(filter);
+		add(reset);
 	}
 
 	@Override
@@ -100,6 +104,17 @@ public class FilterView extends JPanel implements View {
 					JOptionPane.showMessageDialog(null, "Please select one or several file types.", "Warning",
 					        JOptionPane.INFORMATION_MESSAGE);
 				}
+			}
+		});
+
+		reset.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Settings.service = Settings.root;
+				FileTreeView.getView().refresh();
+				FileTreeView.getView().render();
+				TabsManager.getManager().selectedTab().refresh();
 			}
 		});
 	}

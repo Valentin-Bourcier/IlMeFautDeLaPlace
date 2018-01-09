@@ -1,9 +1,13 @@
 package ihm.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.netbeans.swing.outline.RowModel;
 
+import model.NodeFile;
 import model.ServiceNode;
 
 public class FileRowModel implements RowModel {
@@ -12,9 +16,13 @@ public class FileRowModel implements RowModel {
 	public Class getColumnClass(int column) {
 		switch (column) {
 			case 0:
-				return Date.class;
+				return String.class;
 			case 1:
-				return Long.class;
+				return String.class;
+			case 2:
+				return String.class;
+			case 3:
+				return String.class;
 			default:
 				assert false;
 		}
@@ -23,32 +31,46 @@ public class FileRowModel implements RowModel {
 
 	@Override
 	public int getColumnCount() {
-		return 2;
+		return 4;
 	}
 
 	@Override
-	public String getColumnName(int column) {
-		String vName = "";
-		switch (column) {
+	public String getColumnName(int aColumn) {
+		switch (aColumn) {
 			case 0:
-				vName = "Path";
-				break;
+				return "Path";
 			case 1:
-				vName = "Modification date";
-				break;
+				return "Size";
+			case 2:
+				return "Modification date";
+			case 3:
+				return "Estimated duplicates";
 		}
-		return vName;
+		return null;
 	}
 
 	@Override
 	public Object getValueFor(Object aObject, int aColumn) {
-		ServiceNode vNode = (ServiceNode) aObject;
+		DefaultMutableTreeNode vMutableTreeNode = (DefaultMutableTreeNode) aObject;
+		ServiceNode vNode = (ServiceNode) vMutableTreeNode.getUserObject();
 		switch (aColumn) {
 			case 0:
 				return vNode.absolutePath();
 			case 1:
+				return vNode.weight();
+			case 2:
 				long vTime = vNode.lastModificationDate();
-				return new Date(vTime);
+				SimpleDateFormat vFormatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+				return vFormatter.format(new Date(vTime));
+			case 3:
+				if (vNode instanceof NodeFile)
+				{
+					return "Undefined";
+				}
+				else
+				{
+					return DuplicatesCache.getCache().getDuplicatesNumber(vNode.absolutePath());
+				}
 		}
 		return null;
 	}

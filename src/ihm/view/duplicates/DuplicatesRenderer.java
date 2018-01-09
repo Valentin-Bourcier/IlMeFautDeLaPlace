@@ -174,17 +174,8 @@ public class DuplicatesRenderer extends JPanel implements View {
 		vInfo.setIcon(new ImageIcon(vInfoImage));
 		BufferedImage vDeleteImage = ImageIO.read(new File("resources/delete.png"));
 		vDelete.setIcon(new ImageIcon(vDeleteImage));
-		vInfo.setOpaque(false);
-		vInfo.setFocusPainted(false);
-		vInfo.setBorderPainted(false);
-		vInfo.setContentAreaFilled(false);
-		vInfo.setBackground(Color.WHITE);
-		vDelete.setBackground(Color.WHITE);
-		vDelete.setOpaque(false);
-		vDelete.setFocusPainted(false);
-		vDelete.setBorderPainted(false);
-		vDelete.setContentAreaFilled(false);
-		setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+		vInfo.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 0, Color.WHITE));
+		vDelete.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 0, Color.WHITE));
 		menuPanel.add(vInfo);
 		menuPanel.add(vDelete);
 

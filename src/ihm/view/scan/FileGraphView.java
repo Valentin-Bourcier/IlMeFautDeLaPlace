@@ -9,6 +9,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 import ihm.model.Settings;
+import ihm.model.Style;
 import ihm.view.FileTreeView;
 import ihm.view.main.View;
 import model.ServiceNode;
@@ -36,11 +37,8 @@ public class FileGraphView extends JPanel implements View {
 	@Override
 	public void initComponents() {
 		double vPercent = getPercent();
-		int vRed = minColor.getRed() + (int) ((maxColor.getRed() - minColor.getRed()) * vPercent);
-		int vGreen = minColor.getGreen() - (int) (maxColor.getGreen() * vPercent);
-		int vBlue = minColor.getBlue();
 
-		setBackground(new Color(vRed, vGreen, vBlue));
+		setBackground(Style.getColor(vPercent));
 		setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.GRAY));
 
 		setPreferredSize(new Dimension((int) (dimension.width * vPercent), dimension.height));
@@ -64,7 +62,7 @@ public class FileGraphView extends JPanel implements View {
 			focused.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.GRAY));
 		}
 		focused = this;
-		this.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.YELLOW));
+		this.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK));
 
 	}
 

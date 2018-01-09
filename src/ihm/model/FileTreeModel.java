@@ -42,4 +42,9 @@ public class FileTreeModel extends DefaultTreeModel {
 		return null;
 	}
 
+	public DefaultMutableTreeNode findFather(ServiceNode aNode) {
+		DefaultMutableTreeNode vNode = find(aNode);
+		DefaultMutableTreeNode vParent = (DefaultMutableTreeNode) vNode.getParent();
+		return vParent;
+	}
 }
