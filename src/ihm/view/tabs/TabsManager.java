@@ -1,9 +1,12 @@
-package ihm.view;
+package ihm.view.tabs;
 
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import ihm.view.duplicates.DuplicatesView;
+import ihm.view.main.View;
+import ihm.view.scan.FileInformationsView;
 
 public class TabsManager implements View {
 
@@ -11,7 +14,6 @@ public class TabsManager implements View {
 
 	private JTabbedPane tabs;
 
-	public static int HOME = 0;
 	public static int SCAN = -1;
 	public static int DUPLICATES = -2;
 	public static int INFORMATIONS = -3;
@@ -32,16 +34,8 @@ public class TabsManager implements View {
 	public void initComponents() {
 		tabs = new JTabbedPane();
 		tabs.setUI(new TabbedPaneUI());
-		open(HOME);
 		open(SCAN);
 		open(DUPLICATES);
-		open(INFORMATIONS);
-	}
-
-	@Override
-	public void setLayout() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -58,32 +52,49 @@ public class TabsManager implements View {
 
 	public void open(int aId) {
 
-		if (aId == HOME && !isOpen(HOME))
-		{
-			tabs.addTab("Home" + TabbedPaneUI.CLOSE_WIDTH, new JPanel());
-		}
 		if (aId == SCAN && !isOpen(SCAN))
 		{
 			tabs.addTab("Scan" + TabbedPaneUI.CLOSE_WIDTH, new ScanView());
-			SCAN = tabs.getTabCount() - 1;
+			SCAN = tabs.getTabCount();
+			setActive(tabs.getTabCount() - 1);
 		}
-		if (aId == DUPLICATES && !isOpen(DUPLICATES))
+		else if (aId == DUPLICATES && !isOpen(DUPLICATES))
 		{
 			tabs.addTab("Duplicates scan" + TabbedPaneUI.CLOSE_WIDTH, new DuplicatesView());
-			DUPLICATES = tabs.getTabCount() - 1;
+			DUPLICATES = tabs.getTabCount();
+			setActive(tabs.getTabCount() - 1);
 		}
-		if (aId == INFORMATIONS && !isOpen(INFORMATIONS))
+		else if (aId == INFORMATIONS && !isOpen(INFORMATIONS))
 		{
 			tabs.addTab("Informations" + TabbedPaneUI.CLOSE_WIDTH, new FileInformationsView());
-			INFORMATIONS = tabs.getTabCount() - 1;
+			INFORMATIONS = tabs.getTabCount();
+			setActive(tabs.getTabCount() - 1);
 		}
-
-		setActive(tabs.getTabCount() - 1);
+		else
+		{
+			setActive(aId);
+		}
 
 	}
 
 	public boolean isOpen(int aId) {
-		return aId > 0 && aId < tabs.getTabCount();
+		return aId >= 0 && aId <= tabs.getTabCount();
+	}
+
+	public void close() {
+		int aId = TabsManager.getManager().getPane().getSelectedIndex();
+		if (aId == SCAN)
+		{
+			SCAN = -1;
+		}
+		else if (aId == DUPLICATES)
+		{
+			DUPLICATES = -2;
+		}
+		else if (aId == INFORMATIONS)
+		{
+			INFORMATIONS = -3;
+		}
 	}
 
 	public void setActive(int aId) {
@@ -94,8 +105,8 @@ public class TabsManager implements View {
 		return tabs;
 	}
 
-	public JPanel selectedTab() {
-		return (JPanel) tabs.getSelectedComponent();
+	public View selectedTab() {
+		return (View) tabs.getSelectedComponent();
 	}
 
 }

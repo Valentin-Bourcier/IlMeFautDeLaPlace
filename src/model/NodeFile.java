@@ -255,7 +255,7 @@ public class NodeFile implements MyNodeInterface {
 	@Override
 	public boolean isThatKind(String kind) {
 
-		return getType().equals(kind);
+		return getType().contains(kind);
 	}
 
 	@Override

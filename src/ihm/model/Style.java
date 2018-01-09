@@ -1,10 +1,15 @@
-package ihm.core;
+package ihm.model;
 
 import java.text.DecimalFormat;
 
 import model.ServiceNode;
 
 public class Style {
+
+	public static final int DEFAULT_MAIN_WIDTH = 1000;
+	public static final int DEFAULT_MAIN_HEIGHT = 600;
+	public static final int DEFAULT_TREE_WIDTH = 400;
+	public static final int DEFAULT_TAB_WIDTH = 800;
 
 	public static String printWeight(ServiceNode aNode) {
 

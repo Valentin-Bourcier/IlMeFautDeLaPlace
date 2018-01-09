@@ -1,4 +1,4 @@
-package ihm.core;
+package ihm.model;
 
 import java.io.File;
 import java.io.FileInputStream;

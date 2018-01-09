@@ -1,4 +1,4 @@
-package ihm.view;
+package ihm.view.tabs;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -13,7 +13,7 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
 public class TabbedPaneUI extends BasicTabbedPaneUI {
 
-	public static final String CLOSE_WIDTH = "   ";
+	public static final String CLOSE_WIDTH = "     ";
 	private int x1 = 0;
 	private int x2 = 0;
 	private int y1 = 0;
@@ -31,6 +31,7 @@ public class TabbedPaneUI extends BasicTabbedPaneUI {
 					JTabbedPane tabPane = (JTabbedPane) e.getSource();
 					int tabIndex = tabForCoordinate(tabPane, e.getX(), e.getY());
 					tabPane.remove(tabIndex);
+					TabsManager.getManager().close();
 				}
 			}
 

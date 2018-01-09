@@ -483,6 +483,10 @@ public class NodeDirectory implements MyNodeInterface {
 	 */
 	@Override
 	public void computeDoublons() {
+		if (!doublons.isEmpty())
+		{
+			doublons.clear();
+		}
 		if (doublons.containsKey(getHash()))
 			doublons.get(getHash()).add(this);
 		else
