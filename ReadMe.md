@@ -1,6 +1,3 @@
-# Sources accessibles via le lien suivant: https://github.com/Valentin-Bourcier/IlMeFautDeLaPlace
-Je n'arrive pas à uploader les sources du fait de la librairie utilisée qui est assez lourde. Veuillez m'excuser pour le retard qui en résulte.
-
 # Il me faut de la place
 
 ## Partie 1
