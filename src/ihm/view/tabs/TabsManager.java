@@ -35,7 +35,7 @@ public class TabsManager implements View {
 	public void initComponents() {
 		tabs = new JTabbedPane();
 		tabs.setUI(new TabbedPaneUI());
-		open(SCAN);
+
 	}
 
 	@Override

@@ -110,6 +110,7 @@ public class Analyzer extends JFrame implements View {
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
+		TabsManager.getManager().open(TabsManager.SCAN);
 	}
 
 	public static void main(String[] args) {
