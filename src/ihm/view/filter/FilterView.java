@@ -101,7 +101,7 @@ public class FilterView extends JPanel implements View {
 				}
 				else
 				{
-					JOptionPane.showMessageDialog(null, "Please select one or several file types.", "Warning",
+					JOptionPane.showMessageDialog(null, "No correspondance founded", "Warning",
 					        JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
