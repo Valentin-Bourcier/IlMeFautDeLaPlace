@@ -8,15 +8,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -71,9 +68,9 @@ public class DuplicatesRenderer extends JPanel implements View {
 		this.add(menuPanel, BorderLayout.EAST);
 
 		pathPanel.setLayout(new GridLayout(duplicates.size(), 1));
-		pathPanel.setMaximumSize(new Dimension(dimension.width - 60, getHeight()));
+		pathPanel.setMaximumSize(new Dimension(dimension.width - 160, getHeight()));
 		menuPanel.setLayout(new GridLayout(duplicates.size(), 2));
-		menuPanel.setPreferredSize(new Dimension(60, getHeight()));
+		menuPanel.setPreferredSize(new Dimension(160, getHeight()));
 
 	}
 
@@ -166,14 +163,10 @@ public class DuplicatesRenderer extends JPanel implements View {
 
 	private void setButtons(ServiceNode aNode, JLabel aPath) throws IOException {
 
-		JButton vDelete = new JButton();
-		JButton vInfo = new JButton();
-		vInfo.setPreferredSize(new Dimension(30, 30));
-		vDelete.setPreferredSize(new Dimension(30, 30));
-		BufferedImage vInfoImage = ImageIO.read(new File("resources/info.png"));
-		vInfo.setIcon(new ImageIcon(vInfoImage));
-		BufferedImage vDeleteImage = ImageIO.read(new File("resources/delete.png"));
-		vDelete.setIcon(new ImageIcon(vDeleteImage));
+		JButton vDelete = new JButton("Delete");
+		JButton vInfo = new JButton("Info");
+		vInfo.setPreferredSize(new Dimension(80, 31));
+		vDelete.setPreferredSize(new Dimension(80, 31));
 		vInfo.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 0, Color.WHITE));
 		vDelete.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 0, Color.WHITE));
 		menuPanel.add(vInfo);
@@ -194,13 +187,11 @@ public class DuplicatesRenderer extends JPanel implements View {
 			public void actionPerformed(ActionEvent e) {
 				FileTreeModel vModel = (FileTreeModel) FileTreeView.getView().getModel();
 				vModel.remove(aNode);
+				FileTreeView.getView().refresh();
 				duplicates.remove(aNode);
 				((NodeFile) aNode).getFile().delete();
 				Settings.service.remove(aNode);
-				removeAll();
-				render();
-				repaint();
-				FileTreeView.getView().refresh();
+				refresh();
 			}
 		});
 
@@ -229,6 +220,7 @@ public class DuplicatesRenderer extends JPanel implements View {
 	public void refresh() {
 		removeAll();
 		render();
+		repaint();
 	}
 
 }

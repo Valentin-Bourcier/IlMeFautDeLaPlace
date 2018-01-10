@@ -46,6 +46,7 @@ public class Analyzer extends JFrame implements View {
 
 		progress = new JProgressBar();
 		progress.setVisible(false);
+		progress.setIndeterminate(true);
 	}
 
 	@Override

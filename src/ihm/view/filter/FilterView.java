@@ -15,6 +15,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.tree.TreeModel;
 
+import org.apache.tika.mime.MimeTypeException;
+import org.apache.tika.mime.MimeTypes;
+
 import ihm.model.CheckableItem;
 import ihm.model.FileTreeModel;
 import ihm.model.FilterModel;
@@ -66,7 +69,7 @@ public class FilterView extends JPanel implements View {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				ComboBoxModel<CheckableItem> vModel = extensions.getModel();
-
+				MimeTypes types = MimeTypes.getDefaultMimeTypes();
 				ArrayList<String> sl = new ArrayList<>();
 				String[] vTypes = Settings.service.types();
 				for (int i = 0; i < vModel.getSize(); i++)
@@ -76,13 +79,23 @@ public class FilterView extends JPanel implements View {
 					{
 						for (String vType : vTypes)
 						{
-							if (vType.contains(o.toString()))
+							try
 							{
-								sl.add(vType);
+								if (types.forName(vType).getExtension().contains(o.toString()))
+								{
+									sl.add(vType);
+								}
 							}
+							catch (MimeTypeException e1)
+							{
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+
 						}
 					}
 				}
+
 				if (!sl.isEmpty())
 				{
 					ServiceNode vSelection = Settings.service;
