@@ -82,15 +82,8 @@ public class TabsManager implements View {
 	}
 
 	public void close() {
-		int aId = 0;
-		if (TabsManager.getManager().getPane().getTabCount() >= 2)
-		{
-			aId = TabsManager.getManager().getPane().getSelectedIndex() + 1;
-		}
-		else if (TabsManager.getManager().getPane().getTabCount() > 1)
-		{
-			aId = TabsManager.getManager().getPane().getSelectedIndex();
-		}
+		int aId = TabsManager.getManager().getPane().getSelectedIndex() + 1;
+
 		if (aId == DUPLICATES)
 		{
 			DUPLICATES = -2;
