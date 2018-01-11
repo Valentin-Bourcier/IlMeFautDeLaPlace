@@ -30,8 +30,11 @@ public class TabbedPaneUI extends BasicTabbedPaneUI {
 				{
 					JTabbedPane tabPane = (JTabbedPane) e.getSource();
 					int tabIndex = tabForCoordinate(tabPane, e.getX(), e.getY());
-					tabPane.remove(tabIndex);
-					TabsManager.getManager().close();
+					if (tabPane.getTabCount() > 1)
+					{
+						tabPane.remove(tabIndex);
+						TabsManager.getManager().close();
+					}
 				}
 			}
 
